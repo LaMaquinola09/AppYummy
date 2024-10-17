@@ -14,7 +14,7 @@ const LoginScreen = () => {
     const handleLogin = () => {
         // Lógica de autenticación
         console.log('Logging in with', email, password);
-        navigation.navigate('Home'); // Navegar a la pantalla Home después de iniciar sesión
+        navigation.navigate('MainDrawer'); // Navegar a la pantalla Home después de iniciar sesión
     };
 
     return (

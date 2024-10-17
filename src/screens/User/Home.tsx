@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Iconos para los botones
 import { StatusBar } from 'expo-status-bar';
 
 export default function HomeScreen() {
@@ -10,7 +9,6 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.logoText}>YUMMY</Text>
-        <Ionicons name="notifications-outline" size={28} color="white" />
       </View>
 
       {/* Saludo y barra de búsqueda */}
