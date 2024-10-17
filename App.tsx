@@ -1,17 +1,18 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { RootStackParamList } from './src/navigation/types';
 import LoginScreen from './src/screens/Auth/LoginScreen';
 import HomeScreen from './src/screens/User/Home';
 import RegisterScreen from './src/screens/Auth/RegisterScreen';
 import CourierHomeScreen from './src/screens/Courier/CourierHomeScreen';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Login">
+             <Stack.Navigator initialRouteName="Login">
                 <Stack.Screen
                     name="Login"
                     component={LoginScreen}
@@ -33,6 +34,7 @@ export default function App() {
                     options={{ headerShown: false }} // Pantalla principal del repartidor
                 />
             </Stack.Navigator>
+
         </NavigationContainer>
     );
 }

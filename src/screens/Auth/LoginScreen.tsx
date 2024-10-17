@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/types';
+
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const LoginScreen = () => {
+    const navigation = useNavigation<LoginScreenNavigationProp>();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigation = useNavigation();
 
     const handleLogin = () => {
         // Lógica de autenticación
@@ -14,7 +18,11 @@ const LoginScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <ImageBackground
+            source={{ uri: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092' }} // URL de imagen de comida de fondo
+            style={styles.background}
+        >
+            <View style={styles.container}>
             <Text style={styles.title}>Login</Text>
 
             <TextInput
@@ -31,14 +39,16 @@ const LoginScreen = () => {
                 onChangeText={setPassword}
             />
 
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                <Text style={styles.buttonText}>Log In</Text>
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                <Text style={styles.loginButtonText}>Log In</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                 <Text style={styles.registerText}>Don’t have an account? Sign up!</Text>
             </TouchableOpacity>
         </View>
+        </ImageBackground>
+        
     );
 };
 
@@ -49,13 +59,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     container: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
         padding: 20,
         borderRadius: 10,
     },
     title: {
         fontSize: 32,
-        color: '#fff',
+        color: '#000',
         fontWeight: 'bold',
         marginBottom: 10,
     },
@@ -71,7 +81,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         marginBottom: 15,
-        color: '#fff',
+        color: '#000',
     },
     loginButton: {
         backgroundColor: '#ff6347', // Color similar al de una salsa de tomate
@@ -84,7 +94,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     registerText: {
-        color: '#fff',
+        color: '#000',
         marginTop: 10,
         textAlign: 'center',
     },
