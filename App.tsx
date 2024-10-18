@@ -17,29 +17,6 @@ const Drawer = createDrawerNavigator<RootStackParamList>();
 
 // Drawer para las vistas que tendrán menú de hamburguesa
 function DrawerNavigator() {
-<<<<<<< HEAD
-  return (
-    <Drawer.Navigator
-      drawerContent={props => <CustomDrawerContent {...props} />}
-      screenOptions={{
-        drawerType: "slide",
-        drawerActiveTintColor: '#fff',
-        drawerInactiveTintColor: '#eee',
-        drawerStyle: {
-          backgroundColor: '#ff6f00', // Color de fondo del drawer
-          width: 240, // Ancho del drawer
-        },
-
-      }}>
-      <Drawer.Screen name="Home" component={HomeScreen}
-        options={{ title: 'Inicio' }}  // Cambia "Home" por "Inicio"
-      />
-
-      <Drawer.Screen name="CourierHome" component={CourierHomeScreen} />
-    </Drawer.Navigator>
-  );
-}
-=======
     return (
       <Drawer.Navigator
         drawerContent={props => <CustomDrawerContent {...props} />}
@@ -65,7 +42,6 @@ function DrawerNavigator() {
       </Drawer.Navigator>
     );
   }
->>>>>>> 704fa87896cdf411f78439e260da65eab1c37106
 
 // Crea el Stack dentro de una pantalla del Drawer
 function MainStack() {
