@@ -30,7 +30,10 @@ function DrawerNavigator() {
         },
 
       }}>
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Home" component={HomeScreen}
+        options={{ title: 'Inicio' }}  // Cambia "Home" por "Inicio"
+      />
+
       <Drawer.Screen name="CourierHome" component={CourierHomeScreen} />
     </Drawer.Navigator>
   );
