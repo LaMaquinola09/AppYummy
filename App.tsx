@@ -10,6 +10,7 @@ import RegisterScreen from './src/screens/Auth/RegisterScreen';
 import CourierHomeScreen from './src/screens/Courier/CourierHomeScreen';
 import CustomDrawerContent from './src/components/CustomDrawerContent';
 import WelcomeScreen from './src/screens/Auth/WelcomeScreen';
+import RepartidorScreen from './src/screens/Repartidor/RepartidorScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootStackParamList>();
@@ -17,34 +18,34 @@ const Drawer = createDrawerNavigator<RootStackParamList>();
 
 // Drawer para las vistas que tendrán menú de hamburguesa
 function DrawerNavigator() {
-    return (
-      <Drawer.Navigator
-        drawerContent={props => <CustomDrawerContent {...props} />}
-        screenOptions={{
-            drawerType:"slide",
-            drawerActiveTintColor: '#000000',
-            drawerInactiveTintColor: '#000000',
-            drawerStyle: {
-                backgroundColor: '#fff', // Color de fondo del drawer
-                width: 240, // Ancho del drawer
-                paddingTop: 0,
-              },
-            headerStyle: {
-                backgroundColor: '#ff6f00', // Color de fondo de la cabecera (header)
-              },
-            headerTintColor: '#fff', // Color del texto e iconos del header
-            headerTitleStyle: {
-                fontWeight: 'bold', // Estilo del título del header
-              },
-            
-        }}>
-        <Drawer.Screen name="Home" component={HomeScreen} options={{ 
-          headerTitle: 'Perfil',  // Cambiar título solo para esta pantalla
-        }}  />
-        <Drawer.Screen name="CourierHome" component={CourierHomeScreen} />
-      </Drawer.Navigator>
-    );
-  }
+  return (
+    <Drawer.Navigator
+      drawerContent={props => <CustomDrawerContent {...props} />}
+      screenOptions={{
+        drawerType: "slide",
+        drawerActiveTintColor: '#000000',
+        drawerInactiveTintColor: '#000000',
+        drawerStyle: {
+          backgroundColor: '#fff', // Color de fondo del drawer
+          width: 240, // Ancho del drawer
+          paddingTop: 0,
+        },
+        headerStyle: {
+          backgroundColor: '#ff6f00', // Color de fondo de la cabecera (header)
+        },
+        headerTintColor: '#fff', // Color del texto e iconos del header
+        headerTitleStyle: {
+          fontWeight: 'bold', // Estilo del título del header
+        },
+
+      }}>
+      <Drawer.Screen name="Home" component={HomeScreen} options={{
+        headerTitle: 'Perfil',  // Cambiar título solo para esta pantalla
+      }} />
+      <Drawer.Screen name="CourierHome" component={CourierHomeScreen} />
+    </Drawer.Navigator>
+  );
+}
 
 // Crea el Stack dentro de una pantalla del Drawer
 function MainStack() {
@@ -65,6 +66,15 @@ function MainStack() {
         component={RegisterScreen}
         options={{ headerShown: false }} // Ocultar encabezado
       />
+
+      <Stack.Screen
+        name="Repartidor"
+        component={RepartidorScreen}
+        options={{ headerShown: false }} // Ocultar encabezado
+      />
+
+
+
       {/* Vistas con menú de hamburguesa */}
       <Stack.Screen
         name="MainDrawer"

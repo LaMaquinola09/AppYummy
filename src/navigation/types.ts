@@ -5,5 +5,6 @@ export type RootStackParamList = {
     CourierHome: undefined;
     MainDrawer: undefined;
     Welcome:undefined;
+    Repartidor:undefined;
     // Agrega aquí otras rutas que tengas
   };

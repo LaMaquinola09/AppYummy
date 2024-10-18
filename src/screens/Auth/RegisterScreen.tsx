@@ -57,7 +57,7 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 console.log('Response from server:', jsonResponse); // Muestra la respuesta completa del servidor
                 Alert.alert('Éxito', 'Usuario registrado con éxito');
                 resetFields();
-                navigation.navigate('Home');
+                navigation.navigate('Repartidor');
             } else {
                 const errorResponse = await response.json();
                 console.error('Error response from server:', errorResponse);
