@@ -1,7 +1,7 @@
 export type RootStackParamList = {
     Login: undefined;   // Ruta de login
     Home: undefined;    // Ruta de la página principal
-    Register: { userType: 'repartidor' | 'consumidor' }; 
+    Register: { rol: 'repartidor' | 'cliente' | 'restaurante' };
     CourierHome: undefined;
     MainDrawer: undefined;
     Welcome:undefined;

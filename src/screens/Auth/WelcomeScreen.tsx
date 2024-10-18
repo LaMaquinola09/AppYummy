@@ -9,11 +9,11 @@ type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welc
 const WelcomeScreen = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
-  const handleNavigation = (userType: 'repartidor' | 'consumidor') => {
-    navigation.navigate('Register', { userType });
+  const handleNavigation = (rol: 'repartidor' | 'cliente') => {
+    navigation.navigate('Register', { rol });
   };
 
-  const OptionButton = ({ imageSource, text, userType }: { imageSource: any; text: string; userType: 'repartidor' | 'consumidor' }) => (
+  const OptionButton = ({ imageSource, text, userType }: { imageSource: any; text: string; userType: 'repartidor' | 'cliente' }) => (
     <TouchableOpacity
       style={styles.optionContainer}
       onPress={() => handleNavigation(userType)}
@@ -39,7 +39,7 @@ const WelcomeScreen = () => {
       <OptionButton
         imageSource={require('../../../assets/perfil.png')}
         text="¿Estás buscando recibir comida a domicilio?"
-        userType="consumidor"
+        userType="cliente"
       />
     </View>
   );

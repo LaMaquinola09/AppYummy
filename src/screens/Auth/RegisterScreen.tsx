@@ -1,51 +1,81 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/types';
 
 const RegisterScreen = ({ navigation }: { navigation: any }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [name, setName] = useState('');
     const [direccion, setDireccion] = useState('');
-    const [vehicleType, setVehicleType] = useState('');
-    const [phone, setPhone] = useState('');
-    const [zone, setZone] = useState('');
+    const [telefono, setTelefono] = useState('');
+    const [vehiculo, setVehiculo] = useState('');
 
     const route = useRoute<RouteProp<RootStackParamList, 'Register'>>();
-    const userType = route.params.userType;
+    const rol = route.params.rol; // Asegúrate de que 'rol' esté definido al navegar a esta pantalla
 
-    // Cambiar el título del encabezado en función del tipo de usuario
     useEffect(() => {
-        const title = userType === 'repartidor' ? 'Registrarse como Repartidor' : 'Registrarse como Usuario';
-        navigation.setOptions({ title });
-    }, [userType, navigation]);
+        navigation.setOptions({ title: 'Registro' });
+    }, [navigation]);
 
-    const handleRegister = () => {
-        console.log('Registering with', email, password, userType);
-        
-        // Aquí puedes agregar la lógica para registrar al usuario en tu base de datos
-        if (userType === 'repartidor') {
-            console.log('Vehicle Type:', vehicleType);
-            console.log('Zone:', zone);
-            // Validar y enviar datos del repartidor
-        } else {
-            console.log('Delivery Address:', direccion);
-            // Validar y enviar datos del consumidor
+    const handleRegister = async () => {
+        console.log('Registering with', email, password, rol);
+
+        // Validación básica
+        if (!name || !email || !password || !direccion || !telefono) {
+            Alert.alert('Error', 'Por favor, completa todos los campos requeridos.');
+            return;
         }
-        
-        // Reiniciar campos tras el registro (opcional)
-        resetFields();
+
+        if (password !== confirmPassword) {
+            Alert.alert('Error', 'Las contraseñas no coinciden.');
+            return;
+        }
+
+        try {
+            const response = await fetch('https://yummy.soudevteam.com/movilregister', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nombre: name,
+                    email,
+                    password,
+                    password_confirmation: confirmPassword,
+                    direccion,
+                    telefono,
+                    vehiculo: vehiculo || null, // Solo se envía si se ha proporcionado
+                    rol, // Asegúrate de que rol sea válido
+                }),
+            });
+
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                console.log('Response from server:', jsonResponse);
+                Alert.alert('Éxito', 'Usuario registrado con éxito');
+                resetFields();
+                navigation.navigate('Home');
+            } else {
+                const errorResponse = await response.json();
+                console.error('Error response from server:', errorResponse);
+                Alert.alert('Error', errorResponse.message || 'Error al registrar el usuario');
+            }
+        } catch (error) {
+            console.error('Connection error:', error);
+            Alert.alert('Error de conexión', 'Hubo un problema al conectar con el servidor.');
+        }
     };
 
     const resetFields = () => {
         setEmail('');
         setPassword('');
+        setConfirmPassword('');
         setName('');
         setDireccion('');
-        setVehicleType('');
-        setPhone('');
-        setZone('');
+        setTelefono('');
+        setVehiculo('');
     };
 
     return (
@@ -63,7 +93,8 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
-                autoCapitalize="none" // Para que el email no se capitalice
+                autoCapitalize="none"
+                keyboardType="email-address"
             />
             <TextInput
                 style={styles.input}
@@ -74,35 +105,30 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
             />
             <TextInput
                 style={styles.input}
-                placeholder="Teléfono"
-                value={phone}
-                onChangeText={setPhone}
-                keyboardType="phone-pad" // Tipo de teclado para teléfono
+                placeholder="Confirmar Contraseña"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
             />
-
-            {userType === 'repartidor' ? (
-                <>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Tipo de Vehículo"
-                        value={vehicleType}
-                        onChangeText={setVehicleType}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Zona"
-                        value={zone}
-                        onChangeText={setZone}
-                    />
-                </>
-            ) : (
-                <TextInput
-                    style={styles.input}
-                    placeholder="Dirección de Entrega"
-                    value={direccion}
-                    onChangeText={setDireccion}
-                />
-            )}
+            <TextInput
+                style={styles.input}
+                placeholder="Teléfono"
+                value={telefono}
+                onChangeText={setTelefono}
+                keyboardType="phone-pad"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Dirección"
+                value={direccion}
+                onChangeText={setDireccion}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Tipo de Vehículo (opcional: moto/bicicleta/ninguno)"
+                value={vehiculo}
+                onChangeText={setVehiculo}
+            />
 
             <TouchableOpacity style={styles.button} onPress={handleRegister}>
                 <Text style={styles.buttonText}>Registrarse</Text>
@@ -118,6 +144,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+        backgroundColor: '#f8f9fa',
     },
     title: {
         fontSize: 32,
@@ -125,21 +152,25 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     input: {
-        width: 250,
+        width: '100%',
         height: 50,
         borderColor: '#ccc',
         borderWidth: 1,
+        borderRadius: 5,
         marginBottom: 15,
         paddingHorizontal: 10,
+        backgroundColor: '#fff',
     },
     button: {
         backgroundColor: '#ff6347',
         padding: 15,
         borderRadius: 5,
+        width: '100%',
     },
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
 
