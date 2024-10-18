@@ -21,11 +21,18 @@ function DrawerNavigator() {
         drawerContent={props => <CustomDrawerContent {...props} />}
         screenOptions={{
             drawerType:"slide",
-            drawerActiveTintColor: '#fff',
-            drawerInactiveTintColor: '#eee',
+            drawerActiveTintColor: '#000000',
+            drawerInactiveTintColor: '#000000',
             drawerStyle: {
-                backgroundColor: '#ff6f00', // Color de fondo del drawer
+                backgroundColor: '#fff', // Color de fondo del drawer
                 width: 240, // Ancho del drawer
+              },
+            headerStyle: {
+                backgroundColor: '#ff6f00', // Color de fondo de la cabecera (header)
+              },
+            headerTintColor: '#fff', // Color del texto e iconos del header
+            headerTitleStyle: {
+                fontWeight: 'bold', // Estilo del título del header
               },
             
         }}>
