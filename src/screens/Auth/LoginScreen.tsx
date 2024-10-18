@@ -23,32 +23,32 @@ const LoginScreen = () => {
             style={styles.background}
         >
             <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
+                <Text style={styles.title}>Login</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                />
 
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                <Text style={styles.loginButtonText}>Log In</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                    <Text style={styles.loginButtonText}>Log In</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.registerText}>Don’t have an account? Sign up!</Text>
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
+                    <Text style={styles.registerText}>¿No tienes una cuenta? ¡Regístrate!</Text>
+                </TouchableOpacity>
+            </View>
         </ImageBackground>
-        
+
     );
 };
 

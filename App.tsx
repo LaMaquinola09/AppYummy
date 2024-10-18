@@ -9,6 +9,7 @@ import HomeScreen from './src/screens/User/Home';
 import RegisterScreen from './src/screens/Auth/RegisterScreen';
 import CourierHomeScreen from './src/screens/Courier/CourierHomeScreen';
 import CustomDrawerContent from './src/components/CustomDrawerContent';
+import WelcomeScreen from './src/screens/Auth/WelcomeScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootStackParamList>();
@@ -44,33 +45,38 @@ function DrawerNavigator() {
 
 // Crea el Stack dentro de una pantalla del Drawer
 function MainStack() {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen
-             name="Login"
-             component={LoginScreen}
-             options={{ headerShown: false }} // Ocultar encabezado
-         />
-         <Stack.Screen
-             name="Register"
-             component={RegisterScreen}
-             options={{ headerShown: false }} // Ocultar encabezado
-         />
-         {/* Vistas con menú de hamburguesa */}
-        <Stack.Screen
-            name="MainDrawer"
-            component={DrawerNavigator}
-            options={{ headerShown: false }} // El Drawer manejará el encabezado
-        />
-      </Stack.Navigator>
-    );
-  }
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }} // Ocultar encabezado
+      />
+      <Stack.Screen
+        name="Welcome"
+        component={WelcomeScreen}
+        options={{ headerShown: true, title: 'Bienvenido a YUMMY' }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{ headerShown: false }} // Ocultar encabezado
+      />
+      {/* Vistas con menú de hamburguesa */}
+      <Stack.Screen
+        name="MainDrawer"
+        component={DrawerNavigator}
+        options={{ headerShown: false }} // El Drawer manejará el encabezado
+      />
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
-    return (
-        <NavigationContainer>
-             <MainStack />
+  return (
+    <NavigationContainer>
+      <MainStack />
 
-        </NavigationContainer>
-    );
+    </NavigationContainer>
+  );
 }
