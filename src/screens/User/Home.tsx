@@ -12,6 +12,10 @@ export default function HomeScreen() {
         colors={['#ff6f00', '#ff6f00']}
         style={styles.header}>
         <Text style={styles.logoText}>YUMMY</Text>
+        <Image source={require('../../../assets/LogoPNG.png')} 
+        style={styles.categoryImageLogo} 
+        />
+
       </LinearGradient>
 
       {/* Saludo y barra de búsqueda */}
@@ -36,6 +40,18 @@ export default function HomeScreen() {
             <TouchableOpacity style={styles.category}>
               <Image source={require('../../../assets/tacos.jpg')} style={styles.categoryImage} />
               <Text style={styles.categoryText}>Tacos</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/sushi.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Sushi</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/salad.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Ensaladas</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/postre.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Postres</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -69,7 +85,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 5,
     alignItems: 'center',
   },
   logoText: {
@@ -79,6 +95,7 @@ const styles = StyleSheet.create({
   },
   greeting: {
     padding: 20,
+    paddingTop: 5,
     backgroundColor: '#ff6f00',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
@@ -89,8 +106,10 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 20,
     marginBottom: 10,
+    textAlign: 'center',
+    fontFamily: 'sans-serif-light',
   },
   searchBar: {
     backgroundColor: '#ff8c00',
@@ -101,6 +120,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 3 },
+    textAlign: 'center'
   },
   categories: {
     padding: 20,
@@ -108,7 +128,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
     color: '#333',
   },
   category: {
@@ -120,6 +140,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 3 },
+  },
+  categoryImageLogo: {
+    width: 80,
+    height: 80,
   },
   categoryImage: {
     width: 80,
