@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -10,11 +11,46 @@ const LoginScreen = () => {
     const navigation = useNavigation<LoginScreenNavigationProp>();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false); // Para mostrar un spinner mientras se realiza la autenticación
 
-    const handleLogin = () => {
-        // Lógica de autenticación
-        console.log('Logging in with', email, password);
-        navigation.navigate('MainDrawer'); // Navegar a la pantalla Home después de iniciar sesión
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert('Error', 'Por favor, introduce tu correo y contraseña.');
+            return;
+        }
+
+        setLoading(true); // Mostrar spinner de carga mientras se hace la solicitud
+
+        try {
+            const response = await fetch('https://yummy.soudevteam.com/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Si el login fue exitoso, guardar el token
+                Alert.alert('Login exitoso', `Bienvenido ${data.user.nombre}`);
+                
+                // Navegar a la pantalla principal (MainDrawer)
+                navigation.navigate('MainDrawer');
+            } else {
+                // Mostrar mensaje de error de la respuesta de la API
+                Alert.alert('Error de autenticación', data.message || 'Credenciales incorrectas');
+            }
+        } catch (error) {
+            console.error('Error en la autenticación:', error);
+            Alert.alert('Error', 'Ocurrió un error al intentar iniciar sesión.');
+        } finally {
+            setLoading(false); // Ocultar spinner de carga
+        }
     };
 
     return (
@@ -23,34 +59,38 @@ const LoginScreen = () => {
             style={styles.background}
         >
             <View style={styles.container}>
-            <View style={styles.containerHeader}>
-                <Text style={styles.title}>Login</Text>
-            </View>
+                <View style={styles.containerHeader}>
+                    <Text style={styles.title}>Login</Text>
+                </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Correo electrónico"
-                value={email}
-                onChangeText={setEmail}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Contraseña"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Correo electrónico"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType='email-address'
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Contraseña"
+                    secureTextEntry={true}
+                    value={password}
+                    onChangeText={setPassword}
+                />
 
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={loading}>
+                    {loading ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                    ) : (
+                        <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+                    )}
+                </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
                     <Text style={styles.registerText}>¿No tienes una cuenta? ¡Regístrate!</Text>
                 </TouchableOpacity>
             </View>
         </ImageBackground>
-
     );
 };
 
@@ -73,11 +113,6 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
         marginBottom: 10,
-    },
-    subtitle: {
-        fontSize: 16,
-        color: '#fff',
-        marginBottom: 20,
     },
     input: {
         width: 250,

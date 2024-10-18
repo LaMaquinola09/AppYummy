@@ -27,6 +27,7 @@ function DrawerNavigator() {
             drawerStyle: {
                 backgroundColor: '#fff', // Color de fondo del drawer
                 width: 240, // Ancho del drawer
+                paddingTop: 0,
               },
             headerStyle: {
                 backgroundColor: '#ff6f00', // Color de fondo de la cabecera (header)
@@ -37,7 +38,9 @@ function DrawerNavigator() {
               },
             
         }}>
-        <Drawer.Screen name="Home" component={HomeScreen} />
+        <Drawer.Screen name="Home" component={HomeScreen} options={{ 
+          headerTitle: 'Perfil',  // Cambiar título solo para esta pantalla
+        }}  />
         <Drawer.Screen name="CourierHome" component={CourierHomeScreen} />
       </Drawer.Navigator>
     );
