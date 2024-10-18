@@ -14,7 +14,7 @@ const LoginScreen = () => {
     const handleLogin = () => {
         // Lógica de autenticación
         console.log('Logging in with', email, password);
-        navigation.navigate('Home'); // Navegar a la pantalla Home después de iniciar sesión
+        navigation.navigate('MainDrawer'); // Navegar a la pantalla Home después de iniciar sesión
     };
 
     return (
@@ -45,12 +45,12 @@ const LoginScreen = () => {
                 <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.registerText}>Aún no tienes una cuenta? Regístrate!</Text>
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
+                    <Text style={styles.registerText}>¿No tienes una cuenta? ¡Regístrate!</Text>
+                </TouchableOpacity>
+            </View>
         </ImageBackground>
-        
+
     );
 };
 
