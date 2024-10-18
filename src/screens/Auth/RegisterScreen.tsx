@@ -16,8 +16,9 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
     const rol = route.params.rol; // Asegúrate de que 'rol' esté definido al navegar a esta pantalla
 
     useEffect(() => {
+        console.log('Rol recibido:', rol); // Verifica el valor de rol
         navigation.setOptions({ title: 'Registro' });
-    }, [navigation]);
+    }, [navigation, rol]);
 
     const handleRegister = async () => {
         console.log('Registering with', email, password, rol);
@@ -53,7 +54,7 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
 
             if (response.ok) {
                 const jsonResponse = await response.json();
-                console.log('Response from server:', jsonResponse);
+                console.log('Response from server:', jsonResponse); // Muestra la respuesta completa del servidor
                 Alert.alert('Éxito', 'Usuario registrado con éxito');
                 resetFields();
                 navigation.navigate('Home');
