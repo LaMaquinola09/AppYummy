@@ -23,25 +23,27 @@ const LoginScreen = () => {
             style={styles.background}
         >
             <View style={styles.container}>
+            <View style={styles.containerHeader}>
                 <Text style={styles.title}>Login</Text>
+            </View>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    secureTextEntry
-                    value={password}
-                    onChangeText={setPassword}
-                />
+            <TextInput
+                style={styles.input}
+                placeholder="Correo electrónico"
+                value={email}
+                onChangeText={setEmail}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Contraseña"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+            />
 
-                <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                    <Text style={styles.loginButtonText}>Log In</Text>
-                </TouchableOpacity>
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+            </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
                     <Text style={styles.registerText}>¿No tienes una cuenta? ¡Regístrate!</Text>
@@ -59,9 +61,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     container: {
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backgroundColor: 'rgba(255, 255, 255, 0.75)',
         padding: 20,
         borderRadius: 10,
+    },
+    containerHeader: {
+        alignItems: 'center' 
     },
     title: {
         fontSize: 32,
@@ -80,12 +85,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
         borderRadius: 5,
         paddingHorizontal: 10,
-        marginBottom: 15,
+        marginBottom: 20,
         color: '#000',
     },
     loginButton: {
         backgroundColor: '#ff6347', // Color similar al de una salsa de tomate
         padding: 15,
+        marginBottom:15,
         borderRadius: 5,
         alignItems: 'center',
     },

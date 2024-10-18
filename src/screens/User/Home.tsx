@@ -1,15 +1,22 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient'; // Para añadir un efecto de degradado
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      {/* Header */}
-      <View style={styles.header}>
+      {/* Header con gradiente */}
+      <LinearGradient
+        colors={['#ff6f00', '#ff6f00']}
+        style={styles.header}>
         <Text style={styles.logoText}>YUMMY</Text>
-      </View>
+        <Image source={require('../../../assets/LogoPNG.png')} 
+        style={styles.categoryImageLogo} 
+        />
+
+      </LinearGradient>
 
       {/* Saludo y barra de búsqueda */}
       <View style={styles.greeting}>
@@ -34,7 +41,18 @@ export default function HomeScreen() {
               <Image source={require('../../../assets/tacos.jpg')} style={styles.categoryImage} />
               <Text style={styles.categoryText}>Tacos</Text>
             </TouchableOpacity>
-            {/* Añadir más categorías */}
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/sushi.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Sushi</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/salad.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Ensaladas</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/postre.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Postres</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
 
@@ -54,7 +72,6 @@ export default function HomeScreen() {
               <Text style={styles.restaurantDetails}>Sushi • 4.8 ⭐</Text>
             </View>
           </TouchableOpacity>
-          {/* Más restaurantes */}
         </View>
       </ScrollView>
     </View>
@@ -64,14 +81,12 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#f9f9f9',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     padding: 20,
-    backgroundColor: '#ff6f00',
-    paddingTop: 50,
+    paddingTop: 5,
+    alignItems: 'center',
   },
   logoText: {
     color: 'white',
@@ -80,18 +95,32 @@ const styles = StyleSheet.create({
   },
   greeting: {
     padding: 20,
+    paddingTop: 5,
     backgroundColor: '#ff6f00',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
   },
   greetingText: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 20,
     marginBottom: 10,
+    textAlign: 'center',
+    fontFamily: 'sans-serif-light',
   },
   searchBar: {
     backgroundColor: '#ff8c00',
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 25,
     color: 'white',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
+    textAlign: 'center'
   },
   categories: {
     padding: 20,
@@ -99,19 +128,31 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
+    color: '#333',
   },
   category: {
     marginRight: 20,
     alignItems: 'center',
+    borderRadius: 15,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  categoryImageLogo: {
+    width: 80,
+    height: 80,
   },
   categoryImage: {
-    width: 60,
-    height: 60,
-    marginBottom: 5,
+    width: 80,
+    height: 80,
   },
   categoryText: {
     fontSize: 16,
+    color: '#333',
+    marginTop: 5,
   },
   offers: {
     padding: 20,
@@ -121,7 +162,14 @@ const styles = StyleSheet.create({
   },
   restaurantCard: {
     flexDirection: 'row',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    overflow: 'hidden',
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
   },
   restaurantImage: {
     width: 80,
@@ -135,6 +183,7 @@ const styles = StyleSheet.create({
   restaurantName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#333',
   },
   restaurantDetails: {
     color: '#777',
