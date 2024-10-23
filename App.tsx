@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Text } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { RootStackParamList } from './src/navigation/types';
+import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener esta librería instalada
 import LoginScreen from './src/screens/Auth/LoginScreen';
 import HomeScreen from './src/screens/User/Home';
 import RegisterScreen from './src/screens/Auth/RegisterScreen';
@@ -12,11 +12,37 @@ import CustomDrawerContent from './src/components/CustomDrawerContent';
 import WelcomeScreen from './src/screens/Auth/WelcomeScreen';
 import RepartidorScreen from './src/screens/Repartidor/RepartidorScreen';
 
-const Stack = createStackNavigator<RootStackParamList>();
-const Drawer = createDrawerNavigator<RootStackParamList>();
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
+// Componente personalizado para el encabezado
+function CustomHeader() {
+  return (
+    <View style={styles.headerContainer}>
+      {/* Logo de la app */}
+      {/* <Image source={require('./assets/LogoPNG.png')} style={styles.logo} /> */}
 
-// Drawer para las vistas que tendrán menú de hamburguesa
+      {/* Barra de búsqueda */}
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Buscar comida, restaurantes..."
+        placeholderTextColor="#FFF"
+      />
+
+      {/* Icono de Notificaciones */}
+      <TouchableOpacity style={styles.iconButton}>
+        <Ionicons name="notifications-outline" size={28} color="#fff" />
+      </TouchableOpacity>
+
+      {/* Icono de Carrito */}
+      <TouchableOpacity style={styles.iconButton}>
+        <Ionicons name="cart-outline" size={28} color="#fff" />
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+// Drawer para las vistas con menú de hamburguesa
 function DrawerNavigator() {
   return (
     <Drawer.Navigator
@@ -26,22 +52,18 @@ function DrawerNavigator() {
         drawerActiveTintColor: '#000000',
         drawerInactiveTintColor: '#000000',
         drawerStyle: {
-          backgroundColor: '#fff', // Color de fondo del drawer
-          width: 240, // Ancho del drawer
+          backgroundColor: '#fff',
+          width: 240,
           paddingTop: 0,
         },
         headerStyle: {
-          backgroundColor: '#ff6f00', // Color de fondo de la cabecera (header)
+          backgroundColor: '#ff6f00',
         },
-        headerTintColor: '#fff', // Color del texto e iconos del header
-        headerTitleStyle: {
-          fontWeight: 'bold', // Estilo del título del header
-        },
-
+        headerTintColor: '#fff',
+        // Componente personalizado como header
+        headerTitle: () => <CustomHeader />,
       }}>
-      <Drawer.Screen name="Home" component={HomeScreen} options={{
-        headerTitle: 'Perfil',  // Cambiar título solo para esta pantalla
-      }} />
+      <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="CourierHome" component={CourierHomeScreen} />
     </Drawer.Navigator>
   );
@@ -54,7 +76,7 @@ function MainStack() {
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{ headerShown: false }} // Ocultar encabezado
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Welcome"
@@ -64,22 +86,17 @@ function MainStack() {
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
-        options={{ headerShown: false }} // Ocultar encabezado
+        options={{ headerShown: false }}
       />
-
       <Stack.Screen
         name="Repartidor"
         component={RepartidorScreen}
-        options={{ headerShown: false }} // Ocultar encabezado
+        options={{ headerShown: false }}
       />
-
-
-
-      {/* Vistas con menú de hamburguesa */}
       <Stack.Screen
         name="MainDrawer"
         component={DrawerNavigator}
-        options={{ headerShown: false }} // El Drawer manejará el encabezado
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -89,7 +106,36 @@ export default function App() {
   return (
     <NavigationContainer>
       <MainStack />
-
     </NavigationContainer>
   );
 }
+
+// Estilos
+const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#ff6f00',
+    paddingHorizontal: -45,
+    paddingVertical: 9,
+    width: '102%',
+  },
+
+  searchBar: {
+    flex: 1,
+    backgroundColor: '#ff8c00',
+    padding: 5,
+    borderRadius: 25,
+    color: 'white',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
+    textAlign: 'center',
+    marginHorizontal: 8,
+  },
+  iconButton: {
+    paddingHorizontal: 1,
+  },
+});

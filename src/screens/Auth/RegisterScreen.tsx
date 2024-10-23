@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 import { RootStackParamList } from '../../navigation/types';
 
 const RegisterScreen = ({ navigation }: { navigation: any }) => {
@@ -10,22 +11,25 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
     const [name, setName] = useState('');
     const [direccion, setDireccion] = useState('');
     const [telefono, setTelefono] = useState('');
-    const [vehiculo, setVehiculo] = useState('');
+    const [vehiculo, setVehiculo] = useState('ninguno');
+    const [loading, setLoading] = useState(false); // Estado de carga
 
     const route = useRoute<RouteProp<RootStackParamList, 'Register'>>();
-    const rol = route.params.rol; // Asegúrate de que 'rol' esté definido al navegar a esta pantalla
+    const tipo = route.params?.rol ?? 'cliente';
 
     useEffect(() => {
-        console.log('Rol recibido:', rol); // Verifica el valor de rol
         navigation.setOptions({ title: 'Registro' });
-    }, [navigation, rol]);
+    }, [navigation]);
 
     const handleRegister = async () => {
-        console.log('Registering with', email, password, rol);
-
-        // Validación básica
         if (!name || !email || !password || !direccion || !telefono) {
             Alert.alert('Error', 'Por favor, completa todos los campos requeridos.');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            Alert.alert('Error', 'El formato del correo electrónico no es válido.');
             return;
         }
 
@@ -34,11 +38,14 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
             return;
         }
 
+        setLoading(true); // Activar el estado de carga
+
         try {
-            const response = await fetch('https://yummy.soudevteam.com/movilregister', {
+            const response = await fetch('https://yummy.soudevteam.com/apimovilregister', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({
                     nombre: name,
@@ -47,24 +54,24 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
                     password_confirmation: confirmPassword,
                     direccion,
                     telefono,
-                    vehiculo: vehiculo || null, // Solo se envía si se ha proporcionado
-                    rol, // Asegúrate de que rol sea válido
+                    vehiculo: vehiculo || null,
+                    tipo,
                 }),
             });
 
+            setLoading(false); // Desactivar el estado de carga
+
             if (response.ok) {
                 const jsonResponse = await response.json();
-                console.log('Response from server:', jsonResponse); // Muestra la respuesta completa del servidor
                 Alert.alert('Éxito', 'Usuario registrado con éxito');
                 resetFields();
                 navigation.navigate('Repartidor');
             } else {
                 const errorResponse = await response.json();
-                console.error('Error response from server:', errorResponse);
                 Alert.alert('Error', errorResponse.message || 'Error al registrar el usuario');
             }
         } catch (error) {
-            console.error('Connection error:', error);
+            setLoading(false); // Desactivar el estado de carga
             Alert.alert('Error de conexión', 'Hubo un problema al conectar con el servidor.');
         }
     };
@@ -76,63 +83,34 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
         setName('');
         setDireccion('');
         setTelefono('');
-        setVehiculo('');
+        setVehiculo('ninguno');
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Registro</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Nombre"
-                value={name}
-                onChangeText={setName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Contraseña"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Confirmar Contraseña"
-                secureTextEntry
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Teléfono"
-                value={telefono}
-                onChangeText={setTelefono}
-                keyboardType="phone-pad"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Dirección"
-                value={direccion}
-                onChangeText={setDireccion}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Tipo de Vehículo (opcional: moto/bicicleta/ninguno)"
-                value={vehiculo}
-                onChangeText={setVehiculo}
-            />
+            <TextInput style={styles.input} placeholder="Nombre" value={name} onChangeText={setName} />
+            <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+            <TextInput style={styles.input} placeholder="Contraseña" secureTextEntry value={password} onChangeText={setPassword} />
+            <TextInput style={styles.input} placeholder="Confirmar Contraseña" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
+            <TextInput style={styles.input} placeholder="Teléfono" value={telefono} onChangeText={setTelefono} keyboardType="phone-pad" />
+            <TextInput style={styles.input} placeholder="Dirección" value={direccion} onChangeText={setDireccion} />
 
-            <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                <Text style={styles.buttonText}>Registrarse</Text>
+            {/* Componente Picker para el tipo de vehículo */}
+            {tipo === 'repartidor' && ( // Mostrar solo si el tipo es 'repartidor'
+                <>
+                    <Text style={styles.label}>Tipo de Vehículo</Text>
+                    <Picker selectedValue={vehiculo} style={styles.picker} onValueChange={(itemValue) => setVehiculo(itemValue)}>
+                        <Picker.Item label="Ninguno" value="ninguno" />
+                        <Picker.Item label="Moto" value="moto" />
+                        <Picker.Item label="Bicicleta" value="bicicleta" />
+                    </Picker>
+                </>
+            )}
+
+            <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading}>
+                {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.buttonText}>Registrarse</Text>}
             </TouchableOpacity>
         </View>
     );
@@ -161,6 +139,21 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         paddingHorizontal: 10,
         backgroundColor: '#fff',
+    },
+    label: {
+        alignSelf: 'flex-start',
+        marginBottom: 5,
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    picker: {
+        height: 50,
+        width: '100%',
+        marginBottom: 15,
+        backgroundColor: '#fff',
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
     },
     button: {
         backgroundColor: '#ff6347',

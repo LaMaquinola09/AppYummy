@@ -1,0 +1,7 @@
+#Instalar esta dependencias para el carousel
+npm install react-native-snap-carousel@4.0.0-beta.6
+
+#referencias 
+https://react-bootstrap.netlify.app/docs/components/carousel/
+
+https://www.npmjs.com/package/react-native-snap-carousel#example
