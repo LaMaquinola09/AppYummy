@@ -19,7 +19,7 @@ const LoginScreen = () => {
             return;
         }
 
-        setLoading(true); // Mostrar spinner de carga mientras se hace la solicitud
+        setLoading(true);
 
         try {
             const response = await fetch('https://yummy.soudevteam.com/api/auth/login', {
@@ -34,22 +34,27 @@ const LoginScreen = () => {
             });
 
             const data = await response.json();
+            console.log(data); // Para verificar la respuesta
 
             if (response.ok) {
-                // Si el login fue exitoso, guardar el token
                 Alert.alert('Login exitoso', `Bienvenido ${data.user.nombre}`);
-                
-                // Navegar a la pantalla principal (MainDrawer)
-                navigation.navigate('MainDrawer');
+                // Almacena el nombre de usuario
+                await AsyncStorage.setItem('userName', data.user.nombre); // Almacena el nombre de usuario
+
+                // Si la API eventualmente devuelve un token, se puede manejar aquí
+                if (data.token) {
+                    await AsyncStorage.setItem('token', data.token);
+                }
+
+                navigation.navigate('MainDrawer'); // Navega a la pantalla principal
             } else {
-                // Mostrar mensaje de error de la respuesta de la API
                 Alert.alert('Error de autenticación', data.message || 'Credenciales incorrectas');
             }
         } catch (error) {
             console.error('Error en la autenticación:', error);
             Alert.alert('Error', 'Ocurrió un error al intentar iniciar sesión.');
         } finally {
-            setLoading(false); // Ocultar spinner de carga
+            setLoading(false);
         }
     };
 
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     containerHeader: {
-        alignItems: 'center' 
+        alignItems: 'center',
     },
     title: {
         fontSize: 32,
@@ -126,7 +131,7 @@ const styles = StyleSheet.create({
     loginButton: {
         backgroundColor: '#ff6347', // Color similar al de una salsa de tomate
         padding: 15,
-        marginBottom:15,
+        marginBottom: 15,
         borderRadius: 5,
         alignItems: 'center',
     },

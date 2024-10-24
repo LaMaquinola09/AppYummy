@@ -3,7 +3,7 @@ import { View, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-nati
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener esta librería instalada
+import { Ionicons, MaterialIcons  } from '@expo/vector-icons'; // Asegúrate de tener esta librería instalada
 import LoginScreen from './src/screens/Auth/LoginScreen';
 import HomeScreen from './src/screens/User/Home';
 import RegisterScreen from './src/screens/Auth/RegisterScreen';
@@ -60,11 +60,36 @@ function DrawerNavigator() {
           backgroundColor: '#ff6f00',
         },
         headerTintColor: '#fff',
-        // Componente personalizado como header
         headerTitle: () => <CustomHeader />,
-      }}>
-      <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="CourierHome" component={CourierHomeScreen} />
+      }}
+    >
+      <Drawer.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Mis pedidos"
+        component={CourierHomeScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="shopping-bag" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Repartidor"
+        component={CourierHomeScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="bicycle-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 }
@@ -88,11 +113,18 @@ function MainStack() {
         component={RegisterScreen}
         options={{ headerShown: false }}
       />
+
+
       <Stack.Screen
         name="Repartidor"
-        component={RepartidorScreen}
+        component={RegisterScreen}
         options={{ headerShown: false }}
       />
+
+
+
+
+
       <Stack.Screen
         name="MainDrawer"
         component={DrawerNavigator}
