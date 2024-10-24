@@ -3,14 +3,15 @@ import { View, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-nati
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Ionicons, MaterialIcons  } from '@expo/vector-icons'; // Asegúrate de tener esta librería instalada
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'; // Asegúrate de tener esta librería instalada
 import LoginScreen from './src/screens/Auth/LoginScreen';
 import HomeScreen from './src/screens/User/Home';
 import RegisterScreen from './src/screens/Auth/RegisterScreen';
 import CourierHomeScreen from './src/screens/Courier/CourierHomeScreen';
 import CustomDrawerContent from './src/components/CustomDrawerContent';
 import WelcomeScreen from './src/screens/Auth/WelcomeScreen';
-import RepartidorScreen from './src/screens/Repartidor/RepartidorScreen';
+
+import AboutScreen from './src/screens/acercade/AboutScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -120,6 +121,23 @@ function MainStack() {
         component={RegisterScreen}
         options={{ headerShown: false }}
       />
+
+      <Stack.Screen
+        name="Acercade"
+        component={AboutScreen}
+        options={{
+          headerShown: true,
+          title: 'Acerca de YUMMY',
+          headerStyle: {
+            backgroundColor: '#FA6C34', // Color de fondo del encabezado (amarillo)
+          },
+          headerTintColor: '#fff', // Color del texto del encabezado (negro)
+          headerTitleStyle: {
+            fontWeight: 'bold', // Opcional: para hacer el título en negrita
+          },
+        }}
+      />
+
 
 
 

@@ -6,5 +6,6 @@ export type RootStackParamList = {
     MainDrawer: undefined;
     Welcome:undefined;
     Repartidor:undefined;
+    Acercade: undefined;
     // Agrega aquí otras rutas que tengas
   };
