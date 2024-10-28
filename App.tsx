@@ -12,6 +12,8 @@ import CustomDrawerContent from './src/components/CustomDrawerContent';
 import WelcomeScreen from './src/screens/Auth/WelcomeScreen';
 
 import AboutScreen from './src/screens/acercade/AboutScreen';
+import RepartidorScreen from './src/screens/Repartidor/RepartidorScreen';
+import ProfileScreen from './src/screens/perfil/ProfileScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -82,15 +84,8 @@ function DrawerNavigator() {
           ),
         }}
       />
-      <Drawer.Screen
-        name="Repartidor"
-        component={CourierHomeScreen}
-        options={{
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="bicycle-outline" size={size} color={color} />
-          ),
-        }}
-      />
+
+
     </Drawer.Navigator>
   );
 }
@@ -137,6 +132,25 @@ function MainStack() {
           },
         }}
       />
+
+
+      <Stack.Screen
+        name="Mi Perfil"
+        component={ProfileScreen}
+        options={{
+          headerShown: true,
+          title: 'Mi Perfil',
+          headerStyle: {
+            backgroundColor: '#FA6C34', // Color de fondo del encabezado (amarillo)
+          },
+          headerTintColor: '#fff', // Color del texto del encabezado (negro)
+          headerTitleStyle: {
+            fontWeight: 'bold', // Opcional: para hacer el título en negrita
+          },
+        }}
+      />
+
+
 
 
 

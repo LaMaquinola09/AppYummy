@@ -5,7 +5,9 @@ export type RootStackParamList = {
     CourierHome: undefined;
     MainDrawer: undefined;
     Welcome:undefined;
-    Repartidor:undefined;
+    Repartidor: { categoryId: string };
     Acercade: undefined;
+    MiPerfil: undefined;
+
     // Agrega aquí otras rutas que tengas
   };

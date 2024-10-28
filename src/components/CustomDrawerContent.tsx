@@ -39,13 +39,18 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
     props.navigation.navigate('Acercade');
   };
 
+  const handleProfile = () => {
+    props.navigation.navigate('Mi Perfil'); // Navegar a la pantalla de perfil
+  };
+
+
 
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={{ paddingTop: 0 }}>
       {/* Encabezado del Drawer */}
       <View style={styles.header}>
         {/* Avatar del usuario */}
-        <TouchableOpacity style={styles.profileContainer} onPress={() => console.log('Navegar al perfil')}>
+        <TouchableOpacity style={styles.profileContainer} onPress={handleProfile}>
           {userAvatar ? (
             <Image
               source={{ uri: userAvatar }} // Muestra el avatar del usuario
