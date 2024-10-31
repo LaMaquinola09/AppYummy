@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Button, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 
+
 // Definición de interfaces
 interface Pedido {
   id: number;
@@ -20,7 +21,7 @@ interface Repartidor {
 
 const repartidor: Repartidor = {
   nombre: 'Juan Pérez',
-  foto: 'https://example.com/juan.jpg', // URL de la imagen del repartidor
+  foto: 'https://example.com/juan.jpg',
   entregasRealizadas: 120,
   balance: 850.50,
   estado: 'Online',
@@ -46,71 +47,46 @@ const RepartidorScreen: React.FC = () => {
       <Text style={styles.pedidoTexto}>Restaurante: {item.restaurante}</Text>
       <Text style={styles.pedidoTexto}>Dirección del Cliente: {item.direccionCliente}</Text>
       <Text style={styles.pedidoTexto}>Hora de Entrega: {item.horaEntrega}</Text>
-      <Button title="Ver Detalles" onPress={() => {/* Manejar navegación a detalles del pedido */}} />
+      <Button title="Ver Detalles" onPress={() => {/* Manejar navegación a detalles del pedido */ }} />
     </View>
   );
 
   return (
-    <FlatList
-      data={[repartidor]} // Usamos el repartidor como un único elemento de datos
-      keyExtractor={(item) => item.nombre}
-      renderItem={({ item }) => (
-        <View style={styles.container}>
-          {/* Sección de perfil del repartidor */}
-          <View style={styles.perfilContainer}>
-            <Image source={{ uri: item.foto }} style={styles.fotoPerfil} />
-            <View style={styles.infoPerfil}>
-              <Text style={styles.nombre}>{item.nombre}</Text>
-              <Text style={styles.estado}>{item.estado}</Text>
-              <Text>Entregas Realizadas: {item.entregasRealizadas}</Text>
-              <Text>Balance: ${item.balance.toFixed(2)}</Text>
-            </View>
-          </View>
-
-          {/* Mapa Interactivo */}
-          {/* <View style={styles.mapaContainer}>
-            <MapView
-              style={styles.mapa}
-              initialRegion={{
-                latitude: 19.432608,
-                longitude: -99.133209,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.05,
-              }}
-            >
-              {/* Ejemplo de ubicación actual del repartidor */}
-              {/* <Marker
-                coordinate={{ latitude: 19.432608, longitude: -99.133209 }}
-                title="Tu ubicación"
-              />
-            </MapView>
-          </View> */}
-
-          {/* Pedidos Activos */}
-          <View style={styles.pedidosContainer}>
-            <Text style={styles.sectionTitle}>Pedidos Activos</Text>
-            <FlatList
-              data={item.pedidosActivos}
-              keyExtractor={(pedido) => pedido.id.toString()}
-              renderItem={renderPedidoItem}
-            />
-          </View>
-
-          {/* Botones de Acciones Rápidas */}
-          <View style={styles.accionesContainer}>
-            <TouchableOpacity style={styles.boton}>
-              <Text style={styles.botonTexto}>Aceptar Pedido</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.boton}>
-              <Text style={styles.botonTexto}>Cambiar Disponibilidad</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.boton}>
-              <Text style={styles.botonTexto}>Solicitar Retiro</Text>
-            </TouchableOpacity>
-          </View>
+    <View style={styles.container}>
+      {/* Sección de perfil del repartidor */}
+      <View style={styles.perfilContainer}>
+        <Image source={{ uri: repartidor.foto }} style={styles.fotoPerfil} />
+        <View style={styles.infoPerfil}>
+          <Text style={styles.nombre}>{repartidor.nombre}</Text>
+          <Text style={styles.estado}>{repartidor.estado}</Text>
+          <Text>Entregas Realizadas: {repartidor.entregasRealizadas}</Text>
+          <Text>Balance: ${repartidor.balance.toFixed(2)}</Text>
         </View>
-      )}
-    />
+      </View>
+
+      {/* Pedidos Activos */}
+      <View style={styles.pedidosContainer}>
+        <Text style={styles.sectionTitle}>Pedidos Activos</Text>
+        <FlatList
+          data={repartidor.pedidosActivos} // Usamos los pedidos activos del repartidor
+          keyExtractor={(pedido) => pedido.id.toString()}
+          renderItem={renderPedidoItem}
+        />
+      </View>
+
+      {/* Botones de Acciones Rápidas */}
+      <View style={styles.accionesContainer}>
+        <TouchableOpacity style={styles.boton}>
+          <Text style={styles.botonTexto}>Aceptar Pedido</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.boton}>
+          <Text style={styles.botonTexto}>Cambiar Disponibilidad</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.boton}>
+          <Text style={styles.botonTexto}>Solicitar Retiro</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
@@ -142,13 +118,6 @@ const styles = StyleSheet.create({
   estado: {
     color: 'green',
     marginBottom: 5,
-  },
-  mapaContainer: {
-    height: 250,
-    marginVertical: 10,
-  },
-  mapa: {
-    ...StyleSheet.absoluteFillObject,
   },
   pedidosContainer: {
     padding: 20,

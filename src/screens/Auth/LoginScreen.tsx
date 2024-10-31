@@ -40,6 +40,9 @@ const LoginScreen = () => {
                 Alert.alert('Login exitoso', `Bienvenido ${data.user.nombre}`);
                 // Almacena el nombre de usuario
                 await AsyncStorage.setItem('userName', data.user.nombre); // Almacena el nombre de usuario
+                await AsyncStorage.setItem('userEmail', data.user.email);
+                await AsyncStorage.setItem('userPhone', data.user.telefono);
+                await AsyncStorage.setItem('userDireccion', data.user.direccion); // Opcional
 
                 // Si la API eventualmente devuelve un token, se puede manejar aquí
                 if (data.token) {
