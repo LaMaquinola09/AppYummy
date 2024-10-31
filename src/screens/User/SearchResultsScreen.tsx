@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, ActivityIndicator, Button, TouchableOpacity, Image } from 'react-native';
-import {Icon} from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function SearchResultsScreen({ route } : { route:any }) {
     const { query } = route.params;
@@ -44,7 +44,7 @@ export default function SearchResultsScreen({ route } : { route:any }) {
           onSubmitEditing={handleSearch}
         />
         <TouchableOpacity style={styles.searchButton} onPress={() => handleSearch(searchQuery)}>
-          <Icon name="search" size={20} color="#FFF" />
+          <Icon name="search" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
 
