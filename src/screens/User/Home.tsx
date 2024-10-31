@@ -1,87 +1,89 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Modal, Button, FlatList, TextInput, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import Carousel from 'react-native-snap-carousel';
 import { LinearGradient } from 'expo-linear-gradient'; // Para añadir un efecto de degradado
+import { RootStackParamList } from '../../navigation/types';
+// import { useNavigation } from '@react-navigation/native';
 
-const { width: screenWidth } = Dimensions.get('window');
+export default function HomeScreen({ navigation }: { navigation: any }) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const route = useRoute<RouteProp<RootStackParamList, 'Register'>>();
+    const tipo = route.params?.rol ?? 'cliente';
 
-// Agregar descripciones a los elementos del carrusel
-const carouselData = [
-  { title: 'Pizza', description: 'Deliciosa pizza de pepperoni.', image: require('../../../assets/pizza.jpg') },
-  { title: 'Tacos', description: 'Tacos suaves con carne asada.', image: require('../../../assets/tacos.jpg') },
-  { title: 'Sushi', description: 'Fresco sushi de atún.', image: require('../../../assets/sushi.jpg') },
-  { title: 'Ensaladas', description: 'Ensalada de frutas refrescante.', image: require('../../../assets/salad.jpg') },
-  { title: 'Postres', description: 'Postres caseros deliciosos.', image: require('../../../assets/postre.jpg') },
-];
+    useEffect(() => {
+        navigation.setOptions({ title: 'Registro' });
+    }, [navigation]);
 
-export default function HomeScreen() {
-  const carouselRef = useRef<Carousel<any>>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const renderCarouselItem = ({ item }: { item: { title: string; description: string; image: any } }) => {
-    return (
-      <View style={styles.carouselItem}>
-        <Image source={item.image} style={styles.carouselImage} />
-        <LinearGradient
-          colors={['transparent', 'rgba(0, 0, 0, 0.6)']}
-          style={styles.textContainer}
-        >
-          <Text style={styles.carouselTitle}>{item.title}</Text>
-          <Text style={styles.carouselDescription}>{item.description}</Text>
-        </LinearGradient>
-      </View>
-    );
+  const handleSearch = (searchQuery) => {
+    navigation.navigate('SearchResults', { query: searchQuery });
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % carouselData.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (carouselRef.current) {
-      carouselRef.current.snapToItem(activeIndex);
-    }
-  }, [activeIndex]);
 
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.carouselContainer}>
-          <Carousel
-            ref={carouselRef}
-            data={carouselData}
-            renderItem={renderCarouselItem}
-            sliderWidth={screenWidth}
-            itemWidth={screenWidth}
-            inactiveSlideOpacity={0}
-            loop={true}
-            vertical={false}
-            onSnapToItem={(index) => setActiveIndex(index)}
-          />
-        </View>
+      {/* Header con gradiente */}
+      <LinearGradient
+        colors={['#ff6f00', '#ff6f00']}
+        style={styles.header}>
+        <Text style={styles.logoText}>YUMMY</Text>
+        <Image source={require('../../../assets/LogoPNG.png')} 
+        style={styles.categoryImageLogo} 
+        />
+      </LinearGradient>
 
+      {/* Saludo y barra de búsqueda */}
+      <View style={styles.greeting}>
+        <Text style={styles.greetingText}>Hola, ¿Qué se te antoja hoy?</Text>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Buscar comida, restaurantes..."
+          placeholderTextColor="#FFF"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onSubmitEditing={() => handleSearch(searchQuery)}
+        />
+        <TouchableOpacity style={styles.searchButton} onPress={() => handleSearch(searchQuery)}>
+          <Text style={styles.searchButtonText}>Buscar</Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+
+        {/* Categorías de comida */}
         <View style={styles.categories}>
           <Text style={styles.sectionTitle}>Explora por Categorías</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {carouselData.map((item, index) => (
-              <TouchableOpacity key={index} style={styles.category}>
-                <Image source={item.image} style={styles.categoryImage} />
-                <Text style={styles.categoryText}>{item.title}</Text>
-              </TouchableOpacity>
-            ))}
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/pizza.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Pizza</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/tacos.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Tacos</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/sushi.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Sushi</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/salad.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Ensaladas</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.category}>
+              <Image source={require('../../../assets/postre.jpg')} style={styles.categoryImage} />
+              <Text style={styles.categoryText}>Postres</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
 
+        {/* Ofertas */}
         <View style={styles.offers}>
           <Text style={styles.sectionTitle}>Ofertas del día</Text>
+          {/* Aquí iría un slider con imágenes promocionales */}
         </View>
 
+        {/* Restaurantes recomendados */}
         <View style={styles.recommended}>
           <Text style={styles.sectionTitle}>Restaurantes Recomendados</Text>
           <TouchableOpacity style={styles.restaurantCard}>
@@ -102,52 +104,58 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f9f9f9',
   },
-  carouselContainer: {
-    height: 230,
-    marginBottom: 20,
-  },
-  carouselItem: {
-    height: '100%',
-    position: 'relative',
-    backgroundColor: '#ff8c00',
-    borderRadius: 10,
-  
-    padding: 10,
+  header: {
+    padding: 20,
+    paddingTop: 5,
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  logoText: {
+    color: 'white',
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  greeting: {
+    padding: 20,
+    paddingTop: 5,
+    backgroundColor: '#ff6f00',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 10,
-    marginTop: 5,
-    marginHorizontal: 10,
-    marginBottom: 10,
     shadowOffset: { width: 0, height: 3 },
   },
-  carouselImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 10,
+  greetingText: {
+    color: 'white',
+    fontSize: 20,
+    marginBottom: 10,
+    textAlign: 'center',
+    fontFamily: 'sans-serif-light',
   },
-  textContainer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 10,
-    right: 10,
+  searchBar: {
+    backgroundColor: '#ff8c00',
+    padding: 10,
+    borderRadius: 25,
+    color: 'white',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
+    textAlign: 'center'
+  },
+  searchButton: {
+    backgroundColor: '#ff6f00',
+    padding: 10,
+    borderRadius: 25,
     alignItems: 'center',
   },
-  carouselTitle: {
-    fontSize: 18,
+  searchButtonText: {
+    color: 'white',
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-  },
-  carouselDescription: {
-    fontSize: 14,
-    color: '#fff',
-    textAlign: 'center',
   },
   categories: {
-    padding: 13,
+    padding: 20,
   },
   sectionTitle: {
     fontSize: 20,
@@ -158,7 +166,6 @@ const styles = StyleSheet.create({
   category: {
     marginRight: 20,
     alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: 15,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -166,16 +173,18 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 3 },
   },
+  categoryImageLogo: {
+    width: 80,
+    height: 80,
+  },
   categoryImage: {
     width: 80,
     height: 80,
-    borderRadius: 10,
   },
   categoryText: {
     fontSize: 16,
     color: '#333',
-    marginTop: 2,
-    textAlign: 'center',
+    marginTop: 5,
   },
   offers: {
     padding: 20,
@@ -207,8 +216,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+    marginBottom: 3,
   },
   restaurantDetails: {
     color: '#777',
+    fontSize: 14,
+    marginBottom: 3,
   },
 });

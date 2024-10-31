@@ -10,6 +10,7 @@ import RegisterScreen from './src/screens/Auth/RegisterScreen';
 import CourierHomeScreen from './src/screens/Courier/CourierHomeScreen';
 import CustomDrawerContent from './src/components/CustomDrawerContent';
 import WelcomeScreen from './src/screens/Auth/WelcomeScreen';
+import SearchResultsScreen from './src/screens/User/SearchResultsScreen'; // Pantalla de resultados de búsqueda  
 
 import AboutScreen from './src/screens/acercade/AboutScreen';
 
@@ -23,12 +24,12 @@ function CustomHeader() {
       {/* Logo de la app */}
       {/* <Image source={require('./assets/LogoPNG.png')} style={styles.logo} /> */}
 
-      {/* Barra de búsqueda */}
+      {/* Barra de búsqueda
       <TextInput
         style={styles.searchBar}
         placeholder="Buscar comida, restaurantes..."
         placeholderTextColor="#FFF"
-      />
+      /> */}
 
       {/* Icono de Notificaciones */}
       <TouchableOpacity style={styles.iconButton}>
@@ -91,6 +92,7 @@ function DrawerNavigator() {
           ),
         }}
       />
+      <Drawer.Screen name="SearchResults" component={SearchResultsScreen} options={{ title: 'Resultados de Búsqueda' }} />
     </Drawer.Navigator>
   );
 }
@@ -165,7 +167,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     backgroundColor: '#ff6f00',
     paddingHorizontal: -45,
     paddingVertical: 9,
@@ -187,5 +189,6 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     paddingHorizontal: 1,
+    marginHorizontal: 5,
   },
 });

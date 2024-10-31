@@ -7,5 +7,6 @@ export type RootStackParamList = {
     Welcome:undefined;
     Repartidor:undefined;
     Acercade: undefined;
+    SearchResults: undefined;
     // Agrega aquí otras rutas que tengas
   };

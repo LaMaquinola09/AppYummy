@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   logoutButton: {
-    marginTop: 285,
+    marginTop: 255,
     flexDirection: 'row', // Para alinear el ícono y el texto en la misma fila
     alignItems: 'center', // Centra verticalmente
     backgroundColor: '#ff6f00',
