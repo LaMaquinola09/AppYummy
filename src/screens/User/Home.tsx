@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   },
   logoText: {
     color: 'white',
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   greeting: {
@@ -392,8 +392,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
   },
   categoryImageLogo: {
-    width: 80,
-    height: 80,
+    width: 50,
+    height: 50,
   },
   categoryImage: {
     width: 80,

@@ -1,21 +1,30 @@
-import React from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'; // Asegúrate de tener esta librería instalada
-import LoginScreen from './src/screens/Auth/LoginScreen';
-import HomeScreen from './src/screens/User/Home';
-import RegisterScreen from './src/screens/Auth/RegisterScreen';
-import CourierHomeScreen from './src/screens/Courier/CourierHomeScreen';
-import CustomDrawerContent from './src/components/CustomDrawerContent';
-import WelcomeScreen from './src/screens/Auth/WelcomeScreen';
-import SearchResultsScreen from './src/screens/User/SearchResultsScreen'; // Pantalla de resultados de búsqueda  
+import React from "react";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons"; // Asegúrate de tener esta librería instalada
+import LoginScreen from "./src/screens/Auth/LoginScreen";
+import HomeScreen from "./src/screens/User/Home";
+import RegisterScreen from "./src/screens/Auth/RegisterScreen";
+import CourierHomeScreen from "./src/screens/Courier/CourierHomeScreen";
+import CustomDrawerContent from "./src/components/CustomDrawerContent";
+import WelcomeScreen from "./src/screens/Auth/WelcomeScreen";
+import SearchResultsScreen from "./src/screens/User/SearchResultsScreen"; // Pantalla de resultados de búsqueda
 
-import AboutScreen from './src/screens/acercade/AboutScreen';
-import RepartidorScreen from './src/screens/Repartidor/RepartidorScreen';
+import AboutScreen from "./src/screens/acercade/AboutScreen";
+import RepartidorScreen from "./src/screens/Repartidor/RepartidorScreen";
 import OrderScreen from './src/screens/User/OrderScreen';
-import ProfileScreen from './src/screens/perfil/ProfileScreen';
+import ProfileScreen from "./src/screens/perfil/ProfileScreen";
+import PedidosScreen from "./src/screens/MisPedidos/PedidiosScreen";
+import PedidoDetalleScreen from "./src/screens/MisPedidos/DetallesScreen";
+import SeguimientoPedidoScreen from "./src/screens/MisPedidos/SeguimientoPedidoScreen";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -51,20 +60,20 @@ function CustomHeader() {
 function DrawerNavigator() {
   return (
     <Drawer.Navigator
-      drawerContent={props => <CustomDrawerContent {...props} />}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         drawerType: "slide",
-        drawerActiveTintColor: '#000000',
-        drawerInactiveTintColor: '#000000',
+        drawerActiveTintColor: "#000000",
+        drawerInactiveTintColor: "#000000",
         drawerStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: "#fff",
           width: 240,
           paddingTop: 0,
         },
         headerStyle: {
-          backgroundColor: '#ff6f00',
+          backgroundColor: "#ff6f00",
         },
-        headerTintColor: '#fff',
+        headerTintColor: "#fff",
         headerTitle: () => <CustomHeader />,
       }}
     >
@@ -78,9 +87,23 @@ function DrawerNavigator() {
         }}
       />
       <Drawer.Screen
-        name="Mis pedidos"
-        component={CourierHomeScreen}
+        name="Pedidos"
+        component={PedidosScreen}
         options={{
+          headerShown: true,
+          headerTitle: "Lista de Pedidos",
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="shopping-bag" size={size} color={color} />
+          )
+        }}
+      />
+
+      <Drawer.Screen
+        name="Mis Pedidos"
+        component={SeguimientoPedidoScreen}
+        options={{
+          headerShown: true,
+          headerTitle: "Mis Pedidos",
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="shopping-bag" size={size} color={color} />
           ),
@@ -95,7 +118,18 @@ function DrawerNavigator() {
             <MaterialIcons name="lock-clock" size={size} color={color} />
           ),
         }}
+      />      
+      
+      <Drawer.Screen
+        name="Historial de pedidos"
+        component={OrderScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="lock-clock" size={size} color={color} />
+          ),
+        }}
       />
+
       <Drawer.Screen
         name="Repartidor"
         component={CourierHomeScreen}
@@ -105,7 +139,11 @@ function DrawerNavigator() {
           ),
         }}
       />
-      <Drawer.Screen name="SearchResults" component={SearchResultsScreen} options={{ title: 'Resultados de Búsqueda' }} />
+      <Drawer.Screen
+        name="SearchResults"
+        component={SearchResultsScreen}
+        options={{ title: "Resultados de Búsqueda" }}
+      />
     </Drawer.Navigator>
   );
 }
@@ -122,14 +160,13 @@ function MainStack() {
       <Stack.Screen
         name="Welcome"
         component={WelcomeScreen}
-        options={{ headerShown: true, title: 'Bienvenido a YUMMY' }}
+        options={{ headerShown: true, title: "Bienvenido a YUMMY" }}
       />
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
-
 
       <Stack.Screen
         name="Repartidor"
@@ -142,40 +179,38 @@ function MainStack() {
         component={AboutScreen}
         options={{
           headerShown: true,
-          title: 'Acerca de YUMMY',
+          title: "Acerca de YUMMY",
           headerStyle: {
-            backgroundColor: '#FA6C34', // Color de fondo del encabezado (amarillo)
+            backgroundColor: "#FA6C34", // Color de fondo del encabezado (amarillo)
           },
-          headerTintColor: '#fff', // Color del texto del encabezado (negro)
+          headerTintColor: "#fff", // Color del texto del encabezado (negro)
           headerTitleStyle: {
-            fontWeight: 'bold', // Opcional: para hacer el título en negrita
+            fontWeight: "bold", // Opcional: para hacer el título en negrita
           },
         }}
       />
-
 
       <Stack.Screen
         name="Mi Perfil"
         component={ProfileScreen}
         options={{
           headerShown: true,
-          title: 'Mi Perfil',
+          title: "Mi Perfil",
           headerStyle: {
-            backgroundColor: '#FA6C34', // Color de fondo del encabezado (amarillo)
+            backgroundColor: "#FA6C34", // Color de fondo del encabezado (amarillo)
           },
-          headerTintColor: '#fff', // Color del texto del encabezado (negro)
+          headerTintColor: "#fff", // Color del texto del encabezado (negro)
           headerTitleStyle: {
-            fontWeight: 'bold', // Opcional: para hacer el título en negrita
+            fontWeight: "bold", // Opcional: para hacer el título en negrita
           },
         }}
       />
 
-
-
-
-
-
-
+      <Stack.Screen
+        name="DetallePedido"
+        component={PedidoDetalleScreen}
+        options={{ headerShown: false }}
+      />
 
       <Stack.Screen
         name="MainDrawer"
@@ -197,26 +232,26 @@ export default function App() {
 // Estilos
 const styles = StyleSheet.create({
   headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    backgroundColor: '#ff6f00',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    backgroundColor: "#ff6f00",
     paddingHorizontal: -45,
     paddingVertical: 9,
-    width: '102%',
+    width: "102%",
   },
 
   searchBar: {
     flex: 1,
-    backgroundColor: '#ff8c00',
+    backgroundColor: "#ff8c00",
     padding: 5,
     borderRadius: 25,
-    color: 'white',
-    shadowColor: '#000',
+    color: "white",
+    shadowColor: "#000",
     shadowOpacity: 0.2,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 3 },
-    textAlign: 'center',
+    textAlign: "center",
     marginHorizontal: 8,
   },
   iconButton: {
