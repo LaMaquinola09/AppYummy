@@ -43,6 +43,8 @@ const LoginScreen = () => {
                 await AsyncStorage.setItem('userEmail', data.user.email);
                 await AsyncStorage.setItem('userPhone', data.user.telefono);
                 await AsyncStorage.setItem('userDireccion', data.user.direccion); // Opcional
+                await AsyncStorage.setItem('userDireccion', data.user.direccion);
+                await AsyncStorage.setItem('userID', data.user.id.toString());
 
                 // Si la API eventualmente devuelve un token, se puede manejar aquí
                 if (data.token) {

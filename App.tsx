@@ -14,6 +14,7 @@ import SearchResultsScreen from './src/screens/User/SearchResultsScreen'; // Pan
 
 import AboutScreen from './src/screens/acercade/AboutScreen';
 import RepartidorScreen from './src/screens/Repartidor/RepartidorScreen';
+import OrderScreen from './src/screens/User/OrderScreen';
 import ProfileScreen from './src/screens/perfil/ProfileScreen';
 
 const Stack = createStackNavigator();
@@ -68,7 +69,7 @@ function DrawerNavigator() {
       }}
     >
       <Drawer.Screen
-        name="Home"
+        name="Inicio"
         component={HomeScreen}
         options={{
           drawerIcon: ({ color, size }) => (
@@ -82,6 +83,16 @@ function DrawerNavigator() {
         options={{
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="shopping-bag" size={size} color={color} />
+          ),
+        }}
+      />      
+      
+      <Drawer.Screen
+        name="Historial de pedidos"
+        component={OrderScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="lock-clock" size={size} color={color} />
           ),
         }}
       />
