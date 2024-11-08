@@ -23,6 +23,7 @@ import RepartidorScreen from "./src/screens/Repartidor/RepartidorScreen";
 import ProfileScreen from "./src/screens/perfil/ProfileScreen";
 import PedidosScreen from "./src/screens/MisPedidos/PedidiosScreen";
 import PedidoDetalleScreen from "./src/screens/MisPedidos/DetallesScreen";
+import SeguimientoPedidoScreen from "./src/screens/MisPedidos/SeguimientoPedidoScreen";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -85,11 +86,24 @@ function DrawerNavigator() {
         }}
       />
       <Drawer.Screen
-        name="Mis pedidos"
+        name="Pedidos"
         component={PedidosScreen}
         options={{
           headerShown: true,
           headerTitle: "Lista de Pedidos",
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="shopping-bag" size={size} color={color} />
+          ),
+          headerRight: () => <CustomHeader />, // Usa el componente aquí
+        }}
+      />
+
+      <Drawer.Screen
+        name="Mis Pedidos"
+        component={SeguimientoPedidoScreen}
+        options={{
+          headerShown: true,
+          headerTitle: "Mis Pedidos",
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="shopping-bag" size={size} color={color} />
           ),

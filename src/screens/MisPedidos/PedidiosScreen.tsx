@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import {
   View,
   Text,
@@ -37,7 +38,7 @@ interface Pedido {
 }
 
 function PedidosScreen() {
-  const [activeTab, setActiveTab] = useState("historial");
+  const [activeTab, setActiveTab] = useState("pendiente");
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<number | null>(null);
@@ -72,42 +73,51 @@ function PedidosScreen() {
     fetchPedidos();
     const interval = setInterval(() => {
       fetchPedidos();
-    }, 10000); // Actualización cada 10 segundos
+    }, 1000); // Actualización cada 10 segundos
     return () => clearInterval(interval);
   }, []);
 
-  const handleAsignarRepartidor = async (pedidoId: number) => {
-    if (userId === null) return;
-
+  // Función para manejar la asignación del repartidor
+  const handleAssignDelivery = async (pedidoId: number) => {
     try {
       const response = await fetch(
-        `https://yummy.soudevteam.com/api/assignDelivery/${pedidoId}`,
+        `https://yummy.soudevteam.com/reppedidos/assign/${pedidoId}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ repartidor_id: userId }),
         }
       );
+
       if (response.ok) {
-        fetchPedidos();
+        alert("Repartidor asignado con éxito");
+        fetchPedidos(); // Actualizar la lista de pedidos
+      } else {
+        const errorText = await response.text();
+        console.error("Error de servidor:", errorText);
+        alert(`Error: ${errorText}`);
       }
     } catch (error) {
-      console.error(
-        "Error en la solicitud de asignación de repartidor:",
-        error
-      );
+      console.error("Error al asignar el repartidor:", error);
+      alert(`Error: ${error}`);
     }
   };
 
   const filteredOrders = pedidos.filter((order) => {
-    if (activeTab === "historial") {
-      return order.estado === "entregado";
-    } else if (activeTab === "enCurso") {
-      return order.estado === "pendiente";
+    // Filtra según el estado activo y el usuario logueado
+    if (!userId) {
+      return false; // Si no hay un usuario logueado, no mostrar pedidos
     }
-    return false;
+
+    if (activeTab === "pendiente") {
+      return order.estado === "pendiente";
+    } else if (activeTab === "enCamino") {
+      return order.estado === "en_camino" && order.repartidor_id === userId;
+    } else if (activeTab === "entregado") {
+      return order.estado === "entregado" && order.repartidor_id === userId;
+    }
+    return false; // Si no se selecciona ningún estado, mostrar todos
   });
 
   const handleViewDetails = (order: Pedido) => {
@@ -117,6 +127,36 @@ function PedidosScreen() {
 
   const closeModal = () => {
     setModalVisible(false);
+  };
+
+  //Para terminar el proceso de entregas
+  const handleMarkAsDelivered = async (pedidoId: number) => {
+    try {
+      const response = await fetch(
+        `https://yummy.soudevteam.com/reppedidos/${pedidoId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Verificar si la respuesta es exitosa
+      if (response.ok) {
+        alert("Pedido marcado como entregado");
+        // Llamar para actualizar la lista de pedidos
+        fetchPedidos();
+      } else {
+        // Si no es una respuesta exitosa, mostrar el error
+        const errorText = await response.text(); // Obtener el cuerpo de la respuesta como texto
+        console.error("Error de servidor:", errorText);
+        alert(`Error: ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Error al actualizar el estado del pedido:", error);
+      alert(`Error: ${error}`);
+    }
   };
 
   if (loading) {
@@ -132,14 +172,20 @@ function PedidosScreen() {
       {/* Tabs */}
       <View style={styles.tabs}>
         <TouchableOpacity
-          style={[styles.tab, activeTab === "enCurso" && styles.activeTab]}
-          onPress={() => setActiveTab("enCurso")}
+          style={[styles.tab, activeTab === "pendiente" && styles.activeTab]}
+          onPress={() => setActiveTab("pendiente")}
         >
           <Text style={styles.tabText}>Pendientes</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, activeTab === "historial" && styles.activeTab]}
-          onPress={() => setActiveTab("historial")}
+          style={[styles.tab, activeTab === "enCamino" && styles.activeTab]}
+          onPress={() => setActiveTab("enCamino")}
+        >
+          <Text style={styles.tabText}>En Camino</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "entregado" && styles.activeTab]}
+          onPress={() => setActiveTab("entregado")}
         >
           <Text style={styles.tabText}>Entregados</Text>
         </TouchableOpacity>
@@ -242,6 +288,17 @@ function PedidosScreen() {
                     ? "En Camino"
                     : "Entregado"}
                 </Text>
+                {/* Mostrar mensaje según el estado del repartidor */}
+                {order.repartidor_id && order.repartidor_id !== userId && (
+                  <Text style={styles.assignedMessage}>
+                    Este pedido ya tiene un repartidor asignado
+                  </Text>
+                )}
+                {order.repartidor_id === userId && (
+                  <Text style={styles.ownAssignmentMessage}>
+                    Tú has tomado este pedido
+                  </Text>
+                )}
               </View>
             </View>
             <View style={styles.orderDetails}>
@@ -260,16 +317,27 @@ function PedidosScreen() {
             </View>
             <View style={styles.orderFooter}>
               <View style={styles.orderActions}>
-                {order.estado === "pendiente" &&
-                  (order.repartidor_id === null ||
-                    order.repartidor_id === 0) && (
-                    <TouchableOpacity
-                      style={styles.assignButton}
-                      onPress={() => handleAsignarRepartidor(order.id)}
-                    >
-                      <Text style={styles.buttonText}>Tomar Pedido</Text>
-                    </TouchableOpacity>
-                  )}
+                {/* Botón para marcar como entregado cuando el estado es "en_camino" */}
+                {order.estado === "en_camino" && (
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() => handleMarkAsDelivered(order.id)}
+                  >
+                    <Text style={styles.buttonText}>Marcar como entregado</Text>
+                  </TouchableOpacity>
+                )}
+
+                {/* Botón para asignar repartidor solo si el estado es "pendiente" y no tiene repartidor asignado */}
+                {order.estado === "pendiente" && !order.repartidor_id && (
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() => handleAssignDelivery(order.id)}
+                  >
+                    <Text style={styles.buttonText}>Asignar Repartidor</Text>
+                  </TouchableOpacity>
+                )}
+
+                {/* Ver detalles del pedido */}
                 <TouchableOpacity onPress={() => handleViewDetails(order)}>
                   <Text style={styles.linkText}>Ver detalle</Text>
                 </TouchableOpacity>
@@ -547,9 +615,19 @@ const styles = StyleSheet.create({
   statusPending: {
     color: "#FFA500", // Naranja
   },
-
+  ownAssignmentMessage: {
+    color: "green",
+    fontStyle: "italic",
+    marginTop: 5,
+  },
   statusDelivered: {
     color: "#32CD32", // Verde
+  },
+
+  assignedMessage: {
+    color: "red", // O el color que prefieras
+    fontSize: 12,
+    marginTop: 4,
   },
 });
 

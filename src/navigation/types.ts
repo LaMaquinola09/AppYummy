@@ -11,6 +11,7 @@ export type RootStackParamList = {
   MiPerfil: undefined;
   Pedidos: undefined;
   DetallePedido: undefined;
+  MisPedidos: undefined;
 
   // Agrega aquí otras rutas que tengas
 };
