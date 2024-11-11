@@ -77,14 +77,18 @@ function DrawerNavigator() {
       }}
     >
       <Drawer.Screen
-        name="Home"
+        name="Inicio"
         component={HomeScreen}
         options={{
+          headerShown: true,
+          headerTitle: "Inicio",
           drawerIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
+          headerRight: () => <CustomHeader />, // Usa el componente aquí
         }}
       />
+
       <Drawer.Screen
         name="Pedidos"
         component={PedidosScreen}
@@ -120,6 +124,7 @@ function DrawerNavigator() {
           ),
         }}
       />
+
       <Drawer.Screen
         name="SearchResults"
         component={SearchResultsScreen}

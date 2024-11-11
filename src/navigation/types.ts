@@ -12,6 +12,7 @@ export type RootStackParamList = {
   Pedidos: undefined;
   DetallePedido: undefined;
   MisPedidos: undefined;
+  Inicio: undefined;
 
   // Agrega aquí otras rutas que tengas
 };
