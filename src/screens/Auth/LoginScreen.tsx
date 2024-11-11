@@ -51,14 +51,15 @@ const LoginScreen = () => {
       const data = await response.json();
       console.log(data); // Para verificar la respuesta
 
-      if (response.ok) {
-        Alert.alert("Login exitoso", `Bienvenido ${data.user.nombre}`);
-        // Almacena el nombre de usuario
-        await AsyncStorage.setItem("userId", data.user.id.toString()); // Almacena el ID del usuario
-        await AsyncStorage.setItem("userName", data.user.nombre); // Almacena el nombre de usuario
-        await AsyncStorage.setItem("userEmail", data.user.email);
-        await AsyncStorage.setItem("userPhone", data.user.telefono);
-        await AsyncStorage.setItem("userDireccion", data.user.direccion); // Opcional
+            if (response.ok) {
+                Alert.alert('Login exitoso', `Bienvenido ${data.user.nombre}`);
+                // Almacena el nombre de usuario
+                await AsyncStorage.setItem('userName', data.user.nombre); // Almacena el nombre de usuario
+                await AsyncStorage.setItem('userEmail', data.user.email);
+                await AsyncStorage.setItem('userPhone', data.user.telefono);
+                await AsyncStorage.setItem('userDireccion', data.user.direccion); // Opcional
+                await AsyncStorage.setItem('userDireccion', data.user.direccion);
+                await AsyncStorage.setItem('userID', data.user.id.toString());
 
         // Si la API eventualmente devuelve un token, se puede manejar aquí
         if (data.token) {

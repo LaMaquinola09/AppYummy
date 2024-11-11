@@ -20,6 +20,7 @@ import SearchResultsScreen from "./src/screens/User/SearchResultsScreen"; // Pan
 
 import AboutScreen from "./src/screens/acercade/AboutScreen";
 import RepartidorScreen from "./src/screens/Repartidor/RepartidorScreen";
+import OrderScreen from './src/screens/User/OrderScreen';
 import ProfileScreen from "./src/screens/perfil/ProfileScreen";
 import PedidosScreen from "./src/screens/MisPedidos/PedidiosScreen";
 import PedidoDetalleScreen from "./src/screens/MisPedidos/DetallesScreen";
@@ -97,8 +98,7 @@ function DrawerNavigator() {
           headerTitle: "Lista de Pedidos",
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="shopping-bag" size={size} color={color} />
-          ),
-          headerRight: () => <CustomHeader />, // Usa el componente aquí
+          )
         }}
       />
 
@@ -111,7 +111,26 @@ function DrawerNavigator() {
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="shopping-bag" size={size} color={color} />
           ),
-          headerRight: () => <CustomHeader />, // Usa el componente aquí
+        }}
+      />      
+      
+      <Drawer.Screen
+        name="Historial de pedidos"
+        component={OrderScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="lock-clock" size={size} color={color} />
+          ),
+        }}
+      />      
+      
+      <Drawer.Screen
+        name="Historial de pedidos"
+        component={OrderScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="lock-clock" size={size} color={color} />
+          ),
         }}
       />
 
