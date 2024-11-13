@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   TextInput,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -20,7 +21,7 @@ import SearchResultsScreen from "./src/screens/User/SearchResultsScreen"; // Pan
 
 import AboutScreen from "./src/screens/acercade/AboutScreen";
 import RepartidorScreen from "./src/screens/Repartidor/RepartidorScreen";
-import OrderScreen from './src/screens/User/OrderScreen';
+import OrderScreen from "./src/screens/User/OrderScreen";
 import ProfileScreen from "./src/screens/perfil/ProfileScreen";
 import PedidosScreen from "./src/screens/MisPedidos/PedidiosScreen";
 import PedidoDetalleScreen from "./src/screens/MisPedidos/DetallesScreen";
@@ -58,13 +59,22 @@ function CustomHeader() {
 
 // Drawer para las vistas con menú de hamburguesa
 function DrawerNavigator() {
+  const [userRole, setUserRole] = useState("");
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const role = await AsyncStorage.getItem("userRole");
+      setUserRole(role || ""); // Establece el rol como un string vacío si no se encuentra
+    };
+    fetchUserRole();
+  }, []);
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         drawerType: "slide",
-        drawerActiveTintColor: "#000000",
-        drawerInactiveTintColor: "#000000",
+        drawerActiveTintColor: "#ff6f00", // Color para íconos activos
+        drawerInactiveTintColor: "#000000", // Color para íconos inactivos
         drawerStyle: {
           backgroundColor: "#fff",
           width: 240,
@@ -90,6 +100,8 @@ function DrawerNavigator() {
         }}
       />
 
+      {/* Opciones visibles solo para repartidores */}
+
       <Drawer.Screen
         name="Pedidos"
         component={PedidosScreen}
@@ -97,8 +109,8 @@ function DrawerNavigator() {
           headerShown: true,
           headerTitle: "Lista de Pedidos",
           drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="shopping-bag" size={size} color={color} />
-          )
+            <Ionicons name="cart-outline" size={size} color={color} /> // Cambié el ícono aquí
+          ),
         }}
       />
 
@@ -109,37 +121,17 @@ function DrawerNavigator() {
           headerShown: true,
           headerTitle: "Mis Pedidos",
           drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="shopping-bag" size={size} color={color} />
-          ),
-        }}
-      />      
-      
-      <Drawer.Screen
-        name="Historial de pedidos"
-        component={OrderScreen}
-        options={{
-          drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="lock-clock" size={size} color={color} />
-          ),
-        }}
-      />      
-      
-      <Drawer.Screen
-        name="Historial de pedidos"
-        component={OrderScreen}
-        options={{
-          drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="lock-clock" size={size} color={color} />
+            <Ionicons name="list-outline" size={size} color={color} />
           ),
         }}
       />
 
       <Drawer.Screen
-        name="Repartidor"
-        component={CourierHomeScreen}
+        name="Historial de pedidos"
+        component={OrderScreen}
         options={{
           drawerIcon: ({ color, size }) => (
-            <Ionicons name="bicycle-outline" size={size} color={color} />
+            <MaterialIcons name="lock-clock" size={size} color={color} />
           ),
         }}
       />
@@ -149,6 +141,16 @@ function DrawerNavigator() {
         component={SearchResultsScreen}
         options={{ title: "Resultados de Búsqueda" }}
       />
+
+      {/* <Drawer.Screen
+        name="Repartidor"
+        component={CourierHomeScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="bicycle-outline" size={size} color={color} />
+          ),
+        }}
+      /> */}
     </Drawer.Navigator>
   );
 }

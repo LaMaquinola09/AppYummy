@@ -333,7 +333,7 @@ function PedidosScreen() {
                     style={styles.actionButton}
                     onPress={() => handleAssignDelivery(order.id)}
                   >
-                    <Text style={styles.buttonText}>Tomar Pedido</Text>
+                    <Text style={styles.buttonText}>Asignar Repartidor</Text>
                   </TouchableOpacity>
                 )}
 

@@ -23,7 +23,7 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
   const tipo = route.params?.rol ?? "cliente";
 
   useEffect(() => {
-    navigation.setOptions({ title: "Registro" });
+    navigation.setOptions({ title: "Inicio" });
   }, [navigation]);
 
   const handleSearch = (searchQuery) => {

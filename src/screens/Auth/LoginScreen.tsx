@@ -19,6 +19,24 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<
   "Login"
 >;
 
+// Función para obtener el ID y tipo de usuario
+const getUserData = async () => {
+  try {
+    const userId = await AsyncStorage.getItem("userID");
+    const userTipo = await AsyncStorage.getItem("usertipo");
+
+    if (userId !== null && userTipo !== null) {
+      console.log("User ID:", userId);
+      console.log("User Tipo:", userTipo);
+      // Aquí puedes usar los datos como los necesites
+    } else {
+      console.log("No se encontraron datos del usuario.");
+    }
+  } catch (error) {
+    console.error("Error al recuperar datos del usuario:", error);
+  }
+};
+
 const LoginScreen = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [email, setEmail] = useState("");
@@ -51,15 +69,15 @@ const LoginScreen = () => {
       const data = await response.json();
       console.log(data); // Para verificar la respuesta
 
-            if (response.ok) {
-                Alert.alert('Login exitoso', `Bienvenido ${data.user.nombre}`);
-                // Almacena el nombre de usuario
-                await AsyncStorage.setItem('userName', data.user.nombre); // Almacena el nombre de usuario
-                await AsyncStorage.setItem('userEmail', data.user.email);
-                await AsyncStorage.setItem('userPhone', data.user.telefono);
-                await AsyncStorage.setItem('userDireccion', data.user.direccion); // Opcional
-                await AsyncStorage.setItem('userDireccion', data.user.direccion);
-                await AsyncStorage.setItem('userID', data.user.id.toString());
+      if (response.ok) {
+        Alert.alert("Login exitoso", `Bienvenido ${data.user.nombre}`);
+        // Almacena el nombre de usuario
+        await AsyncStorage.setItem("usertipo", data.user.tipo); // Almacena el nombre de usuario
+        await AsyncStorage.setItem("userName", data.user.nombre); // Almacena el nombre de usuario
+        await AsyncStorage.setItem("userEmail", data.user.email);
+        await AsyncStorage.setItem("userPhone", data.user.telefono);
+        await AsyncStorage.setItem("userDireccion", data.user.direccion);
+        await AsyncStorage.setItem("userID", data.user.id.toString());
 
         // Si la API eventualmente devuelve un token, se puede manejar aquí
         if (data.token) {
