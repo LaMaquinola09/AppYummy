@@ -47,15 +47,25 @@ function PedidosScreen() {
 
   const fetchUserId = async () => {
     try {
-      const storedUserId = await AsyncStorage.getItem("userId");
+      const storedUserId = await AsyncStorage.getItem("userID");
+      const storedUserRole = await AsyncStorage.getItem("usertipo"); // Supongamos que también guardaste el rol
+
       if (storedUserId) {
         setUserId(parseInt(storedUserId));
+        console.log("User ID:", storedUserId);
+      } else {
+        console.log("User ID not found");
+      }
+
+      if (storedUserRole) {
+        console.log("User Role:", storedUserRole);
+      } else {
+        console.log("User Role not found");
       }
     } catch (error) {
-      console.error("Error al obtener el ID del usuario:", error);
+      console.error("Error al obtener el ID del usuario o el rol:", error);
     }
   };
-
   const fetchPedidos = async () => {
     try {
       const response = await fetch("https://yummy.soudevteam.com/reppedidos");
@@ -327,20 +337,24 @@ function PedidosScreen() {
                   </TouchableOpacity>
                 )}
 
-                {/* Botón para asignar repartidor solo si el estado es "pendiente" y no tiene repartidor asignado */}
-                {order.estado === "pendiente" && !order.repartidor_id && (
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleAssignDelivery(order.id)}
-                  >
-                    <Text style={styles.buttonText}>Asignar Repartidor</Text>
-                  </TouchableOpacity>
-                )}
+                <View style={styles.buttonContainer}>
+                  {order.estado === "pendiente" && !order.repartidor_id && (
+                    <TouchableOpacity
+                      style={styles.actionButton}
+                      onPress={() => handleAssignDelivery(order.id)}
+                    >
+                      <Text style={styles.buttonText}>Tomar Pedido</Text>
+                    </TouchableOpacity>
+                  )}
 
-                {/* Ver detalles del pedido */}
-                <TouchableOpacity onPress={() => handleViewDetails(order)}>
-                  <Text style={styles.linkText}>Ver detalle</Text>
-                </TouchableOpacity>
+                  {/* Ver detalles del pedido */}
+                  <TouchableOpacity
+                    onPress={() => handleViewDetails(order)}
+                    style={styles.detailsButton}
+                  >
+                    <Text style={styles.linkText}>Ver detalle</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
@@ -415,6 +429,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#F5F5F5",
+  },
+  buttonContainer: {
+    flexDirection: "row", // Alinea los botones en fila
+    justifyContent: "space-between", // Espacio entre los botones
+    marginTop: 10, // Espaciado superior
   },
   tabs: {
     flexDirection: "row",
@@ -497,10 +516,13 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontWeight: "bold",
   },
+  // Texto para el botón de detalles
   linkText: {
-    color: "#007AFF",
-    fontWeight: "bold",
+    color: "#007BFF", // Color azul para el enlace
+    fontSize: 14,
+    fontWeight: "500",
   },
+
   modal: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -571,10 +593,18 @@ const styles = StyleSheet.create({
   },
 
   actionButton: {
-    backgroundColor: "#4CAF50",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    backgroundColor: "#4CAF50", // Verde para acción positiva
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8, // Bordes redondeados
+    marginBottom: 10, // Espaciado entre botones
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 5, // Sombra en Android
+    shadowColor: "#000", // Sombra en iOS
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
   actionButtonText: {
     color: "#fff",
@@ -628,6 +658,26 @@ const styles = StyleSheet.create({
     color: "red", // O el color que prefieras
     fontSize: 12,
     marginTop: 4,
+  },
+
+  detailsButton: {
+    backgroundColor: "#f1f1f1", // Color neutro para detalles
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#ddd", // Borde gris
+    marginTop: 8, // Espaciado superior
+  },
+
+  // Efecto hover (puede ser utilizado si se desea en la web, pero en móvil se manejaría con animaciones o eventos de touch)
+  actionButtonActive: {
+    transform: [{ scale: 0.98 }], // Escala más pequeña al presionar
+  },
+  detailsButtonActive: {
+    transform: [{ scale: 0.98 }],
   },
 });
 

@@ -36,7 +36,7 @@ function SeguimientoPedidoScreen() {
 
   const fetchUserId = async () => {
     try {
-      const storedUserId = await AsyncStorage.getItem("userId");
+      const storedUserId = await AsyncStorage.getItem("userID");
       if (storedUserId) {
         setUserId(parseInt(storedUserId));
       }

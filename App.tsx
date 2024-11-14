@@ -111,6 +111,7 @@ function DrawerNavigator() {
           drawerIcon: ({ color, size }) => (
             <Ionicons name="cart-outline" size={size} color={color} /> // Cambié el ícono aquí
           ),
+          headerRight: () => <CustomHeader />, // Usa el componente aquí
         }}
       />
 
