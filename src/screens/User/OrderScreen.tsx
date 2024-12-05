@@ -34,28 +34,35 @@ const OrdersScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Historial de pedidos</Text>
-            <FlatList
-                data={orders}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.orderCard}>
-                        <Text style={styles.orderTitle}>Pedido ID: {item.id}</Text>
-                        <Text style={styles.restaurantName}>Restaurante: {item.restaurante.nombre}</Text>
-                        <Text style={styles.orderText}>Dirección: {item.restaurante.direccion}</Text>
-                        <Text style={styles.orderText}>Teléfono: {item.restaurante.telefono}</Text>
-                        <Text style={styles.sectionTitle}>Productos</Text>
-                        {item.productos.map((product) => (
-                            <View key={product.id} style={styles.productItem}>
-                                <Text style={styles.productName}>Nombre: {product.nombre_producto}</Text>
-                                <Text style={styles.productDescription}>Descripción: {product.descripcion}</Text>
-                                <Text style={styles.productDescription}>Cantidad: {product.pivot.cantidad}</Text>
-                                <Text style={styles.productPrice}>Precio: ${product.precio}</Text>
+            {orders.length == 0 ? (
+                <Text style={styles.title}>No se encontraron pedidos</Text>
+                    
+            ) : (
+                <>
+                    <Text style={styles.title}>Historial de pedidos</Text>
+                    <FlatList
+                        data={orders}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                            <View style={styles.orderCard}>
+                                <Text style={styles.orderTitle}>Pedido ID: {item.id}</Text>
+                                <Text style={styles.restaurantName}>Restaurante: {item.restaurante.nombre}</Text>
+                                <Text style={styles.orderText}>Dirección: {item.restaurante.direccion}</Text>
+                                <Text style={styles.orderText}>Teléfono: {item.restaurante.telefono}</Text>
+                                <Text style={styles.sectionTitle}>Productos</Text>
+                                {item.productos.map((product) => (
+                                    <View key={product.id} style={styles.productItem}>
+                                        <Text style={styles.productName}>Nombre: {product.nombre_producto}</Text>
+                                        <Text style={styles.productDescription}>Descripción: {product.descripcion}</Text>
+                                        <Text style={styles.productDescription}>Cantidad: {product.pivot.cantidad}</Text>
+                                        <Text style={styles.productPrice}>Precio: ${product.precio}</Text>
+                                    </View>
+                                ))}
                             </View>
-                        ))}
-                    </View>
-                )}
-            />
+                        )}
+                    />
+                </>
+            )}
         </View>
     );
 };

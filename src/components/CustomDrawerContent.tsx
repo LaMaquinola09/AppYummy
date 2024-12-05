@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
-import { DrawerContentScrollView, DrawerItemList, DrawerContentComponentProps } from '@react-navigation/drawer';
+import { DrawerContentScrollView, DrawerContentComponentProps } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener esta librería instalada
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CustomDrawerContent(props: DrawerContentComponentProps) {
   const [userName, setUserName] = useState<string | null>(null);
-  const [userAvatar, setUserAvatar] = useState<string | null>(null); // Estado para el avatar del usuario
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>("");
 
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const name = await AsyncStorage.getItem('userName'); // Cambia 'userName' si usas otra clave
-        const avatar = await AsyncStorage.getItem('userAvatar'); // Cambia 'userAvatar' si usas otra clave
+        const name = await AsyncStorage.getItem('userName');
+        const avatar = await AsyncStorage.getItem('userAvatar');
+        const role = await AsyncStorage.getItem('usertipo');
         setUserName(name);
-        setUserAvatar(avatar); // Almacena el avatar
+        setUserAvatar(avatar);
+        setUserRole(role);
       } catch (error) {
         console.error('Error al obtener los datos del usuario:', error);
       }
@@ -25,10 +28,8 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('token'); // Asegúrate de usar la clave correcta
-      await AsyncStorage.removeItem('userName'); // Opcional: también puedes eliminar el nombre al cerrar sesión
-      await AsyncStorage.removeItem('userAvatar'); // Opcional: también puedes eliminar el avatar al cerrar sesión
-      props.navigation.navigate('Login'); // Cambia 'Login' por el nombre de tu pantalla de inicio de sesión
+      await AsyncStorage.clear();
+      props.navigation.reset({index:0, routes:[{name:'Login'}]});
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
       Alert.alert('Error', 'No se pudo cerrar sesión. Inténtalo de nuevo.');
@@ -40,24 +41,35 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
   };
 
   const handleProfile = () => {
-    props.navigation.navigate('Mi Perfil'); // Navegar a la pantalla de perfil
+    props.navigation.navigate('Mi Perfil');
   };
 
+  // Filtrar pantallas según el rol del usuario
+  const filteredScreens = [
+    { name: 'Admin', label: 'Inicio', icon: "home-outline", roles: ['admin'] },
+    { name: 'Inicio', label: 'Inicio', icon: "home-outline", roles: ['cliente'] },
+    { name: 'Repartidor', label: 'Repartidor', icon: "bicycle-outline", roles: ['repartidor'] },
+    { name: 'Pedidos', label: 'Lista de Pedidos', icon: "cart-outline", roles: ['repartidor'] },
+    { name: 'Historial de pedidos', label: 'Historial de pedidos', icon: "time-outline", roles: ['cliente'] },
+    { name: 'Mis Pedidos', label: 'Mis Pedidos', icon: "list-outline", roles: ['cliente'] },
+    { name: 'Mi Perfil', label: 'Perfil', icon: "person-outline", roles: ['cliente', 'admin', 'repartidor'] },
+    { name: 'WebViewScreen', label: 'Recuperar contraseña', icon: "lock-closed-outline", roles: ['cliente', 'admin', 'repartidor'] },
+  ];
 
+  const screensToShow = filteredScreens.filter((screen) => screen.roles.includes(userRole || ''));
 
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={{ paddingTop: 0 }}>
       {/* Encabezado del Drawer */}
       <View style={styles.header}>
-        {/* Avatar del usuario */}
         <TouchableOpacity style={styles.profileContainer} onPress={handleProfile}>
           {userAvatar ? (
             <Image
-              source={{ uri: userAvatar }} // Muestra el avatar del usuario
+              source={{ uri: userAvatar }}
               style={styles.avatar}
             />
           ) : (
-            <Ionicons name="person-circle-outline" size={60} color="#fff" style={styles.avatar} /> // Ícono predeterminado
+            <Ionicons name="person-circle-outline" size={55} color="#fff" style={styles.avatar} />
           )}
           <View>
             <Text style={styles.userName}>{userName || 'Usuario'}</Text>
@@ -65,14 +77,21 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
           </View>
         </TouchableOpacity>
       </View>
+      
 
-      <DrawerItemList {...props} />
+      {/* Renderizar las pantallas filtradas */}
+      {screensToShow.map((screen) => (
+        <TouchableOpacity
+          key={screen.name}
+          style={styles.drawerItem}
+          onPress={() => props.navigation.navigate(screen.name)}
+        >
+          <Ionicons name={screen.icon} size={25}/>
+          <Text style={styles.drawerItemText}>{screen.label}</Text>
+        </TouchableOpacity>
+      ))}
 
       <View style={styles.separator} />
-
-      <TouchableOpacity style={styles.button} activeOpacity={0.7}>
-        <Text style={styles.buttonText}>Información adicional</Text>
-      </TouchableOpacity>
 
       <TouchableOpacity onPress={handleAbout} style={styles.aboutButton}>
         <Ionicons name="information-circle-outline" size={28} color="#142738" style={styles.icon} />
@@ -90,16 +109,11 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
 // Estilos
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#ff6f00', // Color naranja
-    paddingVertical: 40, // Aumenta el tamaño del Header
+    backgroundColor: '#ff6f00',
+    paddingTop: 40,
+    paddingBottom: 30,
     paddingHorizontal: 10,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
-    elevation: 0,
+    marginBottom: 10
   },
   profileContainer: {
     flexDirection: 'row',
@@ -122,21 +136,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#fff',
   },
-  logoutButton: {
-    marginTop: 255,
-    flexDirection: 'row', // Para alinear el ícono y el texto en la misma fila
-    alignItems: 'center', // Centra verticalmente
-    backgroundColor: '#ff6f00',
-    padding: 12,
-    borderRadius: 0,
+  drawerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+    paddingHorizontal: 15,
   },
-  logoutButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    marginLeft: 10, // Espacio entre el ícono y el texto
-  },
-  icon: {
-    marginRight: 5,
+  drawerItemText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000',
+    marginLeft: 10,
   },
   separator: {
     height: 1,
@@ -144,26 +154,28 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   aboutButton: {
-    flexDirection: 'row', // Alinea el ícono y el texto en una fila
-    alignItems: 'center', // Centra verticalmente
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 10,
   },
   aboutButtonText: {
     color: '#142738',
     fontWeight: 'bold',
-    marginLeft: 8, // Espacio entre el ícono y el texto
+    marginLeft: 8,
   },
-
-  button: {
-    marginTop: 20,
-    padding: 10,
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#ff6f00',
-    borderRadius: 5, // Añadir un borde redondeado
+    padding: 12,
+    borderRadius: 5,
   },
-  buttonText: {
+  logoutButtonText: {
     color: 'white',
     fontWeight: 'bold',
-
-
+    marginLeft: 10,
+  },
+  icon: {
+    marginRight: 5,
   },
 });

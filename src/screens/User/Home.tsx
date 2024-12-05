@@ -10,6 +10,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
@@ -19,6 +20,9 @@ import { RootStackParamList } from "../../navigation/types";
 
 export default function HomeScreen({ navigation }: { navigation: any }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [restaurants, setRestaurants] = useState<any[]>([]); // Estado para almacenar los restaurantes
+  const [loading, setLoading] = useState<boolean>(true); // Estado para manejar la carga
+  const [error, setError] = useState<string | null>(null);
   const route = useRoute<RouteProp<RootStackParamList, "Register">>();
   const tipo = route.params?.rol ?? "cliente";
 
@@ -26,9 +30,48 @@ export default function HomeScreen({ navigation }: { navigation: any }) {
     navigation.setOptions({ title: "Inicio" });
   }, [navigation]);
 
-  const handleSearch = (searchQuery) => {
+
+  useEffect(() => {
+    // Llamada al endpoint para obtener los restaurantes
+    const fetchRestaurants = async () => {
+      try {
+        const response = await fetch("https://www.google.com"); // Cambia con tu URL real
+        if (response.ok) {
+          const data = await response.json(); // Convierte la respuesta en formato JSON
+          setRestaurants(data); // Almacena los restaurantes en el estado
+        } else {
+          setError("Error al obtener los restaurantes."); // Maneja errores HTTP
+        }
+      } catch (err) {
+        setError("Error de conexión con el servidor."); // Maneja errores de conexión
+      } finally {
+        setLoading(false); // Termina la carga
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
+
+  const handleSearch = (searchQuery:any) => {
     navigation.navigate("SearchResults", { query: searchQuery });
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#ff6f00" />
+      </View>
+    );
+  }
+
+  // Manejo de errores
+  // if (error) {
+  //   return (
+  //     <View style={styles.errorContainer}>
+  //       <Text style={styles.errorText}>{error}</Text>
+  //     </View>
+  //   );
+  // }
 
   return (
     <View style={styles.container}>
@@ -465,6 +508,20 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 5,
     alignItems: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 18,
   },
   logoText: {
     color: "white",

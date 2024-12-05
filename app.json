@@ -3,10 +3,13 @@
     "name": "AppYummy",
     "slug": "AppYummy",
     "version": "1.0.0",
+    "newArchEnabled": true,
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "permissions": ["location"],
+    "permissions": [
+      "location"
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -19,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.cielomorales.AppYummy"
     },
     "web": {
       "favicon": "./assets/favicon.png"

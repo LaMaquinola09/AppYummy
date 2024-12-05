@@ -39,6 +39,7 @@ const getUserData = async () => {
 
 const LoginScreen = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false); // Para mostrar un spinner mientras se realiza la autenticación
@@ -84,7 +85,7 @@ const LoginScreen = () => {
           await AsyncStorage.setItem("token", data.token);
         }
 
-        navigation.navigate("MainDrawer"); // Navega a la pantalla principal
+        navigation.reset({index:0, routes:[{name: 'MainDrawer'}]}); // Navega a la pantalla principal
       } else {
         Alert.alert(
           "Error de autenticación",

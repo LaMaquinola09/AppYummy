@@ -5,13 +5,15 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  ActivityIndicator
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createDrawerNavigator, DrawerContentComponentProps } from "@react-navigation/drawer";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"; // Asegúrate de tener esta librería instalada
 import LoginScreen from "./src/screens/Auth/LoginScreen";
+import HomeAdmin from "./src/screens/admin/HomeAdmin";
 import HomeScreen from "./src/screens/User/Home";
 import RegisterScreen from "./src/screens/Auth/RegisterScreen";
 import CourierHomeScreen from "./src/screens/Courier/CourierHomeScreen";
@@ -26,31 +28,63 @@ import ProfileScreen from "./src/screens/perfil/ProfileScreen";
 import PedidosScreen from "./src/screens/MisPedidos/PedidiosScreen";
 import PedidoDetalleScreen from "./src/screens/MisPedidos/DetallesScreen";
 import SeguimientoPedidoScreen from "./src/screens/MisPedidos/SeguimientoPedidoScreen";
+import CartScreen from "./src/screens/User/CartScreen";
+import { useNavigation } from "@react-navigation/native";
+import { StripeProvider } from '@stripe/stripe-react-native';
+import WebView from "react-native-webview";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+
+function ValidationScreen({ navigation }: { navigation: any }) {
+  useEffect(() => {
+    const validateUser = async () => {
+      const userType = await getUserType(); // Función asíncrona
+      if (userType === "admin") {
+        navigation.replace("InicioA");
+      } else if (userType === "usuario") {
+        navigation.replace("Inicio");
+      } else if (userType === "repartidor") {
+        navigation.replace("Repartidor");
+      }
+    };
+    validateUser();
+  }, [navigation]);
+
+  return (
+    <View style={styles.container}>
+      <ActivityIndicator size="large" color="#ff6f00" />
+    </View>
+  );
+}
+function WebViewScreen() {
+  return (
+    <WebView
+      source={{ uri: 'https://yummy.soudevteam.com/forgot-password' }} // La URL que deseas cargar
+      style={{ flex: 1 }}
+    />
+  );
+}
+async function getUserType(): Promise<string> {
+  // Aquí define tu lógica para determinar el tipo de usuario
+  // Puede ser de Firebase Auth, AsyncStorage, API, etc.
+  // Simulamos que el usuario es un administrador
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const userType = "admin"; // Simulación: Cambia esto según tus pruebas
+      resolve(userType);
+    }, 1000);});
+}
 // Componente personalizado para el encabezado
 function CustomHeader() {
+  const navigation = useNavigation(); // Obtiene el objeto navigation del contexto
   return (
     <View style={styles.headerContainer}>
-      {/* Logo de la app */}
-      {/* <Image source={require('./assets/LogoPNG.png')} style={styles.logo} /> */}
-
-      {/* Barra de búsqueda
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Buscar comida, restaurantes..."
-        placeholderTextColor="#FFF"
-      /> */}
-
-      {/* Icono de Notificaciones */}
-      <TouchableOpacity style={styles.iconButton}>
-        <Ionicons name="notifications-outline" size={28} color="#fff" />
-      </TouchableOpacity>
+      
 
       {/* Icono de Carrito */}
-      <TouchableOpacity style={styles.iconButton}>
+      <TouchableOpacity style={styles.iconButton} onPress={() => navigation.reset({index:0, routes:[{name:'Cart'}]})}>
         <Ionicons name="cart-outline" size={28} color="#fff" />
       </TouchableOpacity>
     </View>
@@ -59,49 +93,54 @@ function CustomHeader() {
 
 // Drawer para las vistas con menú de hamburguesa
 function DrawerNavigator() {
-  const [userRole, setUserRole] = useState("");
+  const [userRole, setUserRole] = useState<string | null>(null); // Inicializa con null
+  const [userFirstName, setUserFirstName] = useState<string | null>("");
+
   useEffect(() => {
     const fetchUserRole = async () => {
-      const role = await AsyncStorage.getItem("userRole");
-      setUserRole(role || ""); // Establece el rol como un string vacío si no se encuentra
+      const role = await AsyncStorage.getItem("usertipo");
+      const nombreC = await AsyncStorage.getItem("userName");
+      const nombreF = nombreC ? nombreC.split(" ") : [];
+      setUserFirstName(nombreF[0] || "");
+      setUserRole(role || ""); // Si no se encuentra el rol, establece un valor por defecto
     };
     fetchUserRole();
   }, []);
 
+  // Muestra un indicador de carga mientras userRole es null
+  if (userRole === null) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#ff6f00" />
+      </View>
+    );
+  }
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
+      initialRouteName={userRole === "cliente" ? "Inicio" : "Pedidos"} // Usa userRole aquí
       screenOptions={{
         drawerType: "slide",
-        drawerActiveTintColor: "#ff6f00", // Color para íconos activos
-        drawerInactiveTintColor: "#000000", // Color para íconos inactivos
+        drawerActiveTintColor: "#ff6f00",
+        drawerInactiveTintColor: "#000000",
         drawerStyle: {
           backgroundColor: "#fff",
           width: 240,
-          paddingTop: 0,
         },
         headerStyle: {
           backgroundColor: "#ff6f00",
         },
         headerTintColor: "#fff",
-        headerTitle: () => <CustomHeader />,
+        headerRight: (props) => <CustomHeader />,
       }}
     >
       <Drawer.Screen
         name="Inicio"
         component={HomeScreen}
-        options={{
-          headerShown: true,
-          headerTitle: "Inicio",
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
-          ),
-          headerRight: () => <CustomHeader />, // Usa el componente aquí
-        }}
+        options={{ headerTitle: "Inicio" }}
       />
-
-      {/* Opciones visibles solo para repartidores */}
-
+      <Drawer.Screen name="WebViewScreen" component={WebViewScreen} />
       <Drawer.Screen
         name="Pedidos"
         component={PedidosScreen}
@@ -109,12 +148,19 @@ function DrawerNavigator() {
           headerShown: true,
           headerTitle: "Lista de Pedidos",
           drawerIcon: ({ color, size }) => (
-            <Ionicons name="cart-outline" size={size} color={color} /> // Cambié el ícono aquí
+            <Ionicons name="cart-outline" size={size} color={color} />
           ),
-          headerRight: () => <CustomHeader />, // Usa el componente aquí
         }}
       />
-
+      <Drawer.Screen
+        name="Historial de pedidos"
+        component={OrderScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="lock-clock" size={size} color={color} />
+          ),
+        }}
+      />
       <Drawer.Screen
         name="Mis Pedidos"
         component={SeguimientoPedidoScreen}
@@ -126,32 +172,27 @@ function DrawerNavigator() {
           ),
         }}
       />
-
       <Drawer.Screen
-        name="Historial de pedidos"
-        component={OrderScreen}
+        name="repart"
+        component={RepartidorScreen}
         options={{
+          headerShown: true,
+          headerTitle: "Bienvenido " + userFirstName,
           drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="lock-clock" size={size} color={color} />
+            <Ionicons name="list-outline" size={size} color={color} />
           ),
         }}
       />
-
       <Drawer.Screen
         name="SearchResults"
         component={SearchResultsScreen}
         options={{ title: "Resultados de Búsqueda" }}
       />
-
-      {/* <Drawer.Screen
-        name="Repartidor"
-        component={CourierHomeScreen}
-        options={{
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="bicycle-outline" size={size} color={color} />
-          ),
-        }}
-      /> */}
+      <Drawer.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{ title: "Carrito de Pedido", headerRight: undefined}}
+      />
     </Drawer.Navigator>
   );
 }
@@ -219,6 +260,7 @@ function MainStack() {
         component={PedidoDetalleScreen}
         options={{ headerShown: false }}
       />
+      
 
       <Stack.Screen
         name="MainDrawer"
@@ -231,9 +273,14 @@ function MainStack() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <MainStack />
-    </NavigationContainer>
+    <StripeProvider
+        publishableKey="pk_live_51Q4IE1Gl0IBGSgAJDuSXtxUKFLH9ZduvS35LPkV9WjvSiwsMuRQ0cMjfxSSGHetMszAcG07RGYKIHperls8YSI5l00YLqPJ7hI" // Reemplaza con tu clave de publicación
+    >
+        <NavigationContainer>
+          <MainStack />
+        </NavigationContainer>
+    </StripeProvider>
+    
   );
 }
 
@@ -265,5 +312,11 @@ const styles = StyleSheet.create({
   iconButton: {
     paddingHorizontal: 1,
     marginHorizontal: 5,
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
   },
 });

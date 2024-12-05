@@ -12,7 +12,9 @@ export type RootStackParamList = {
   Pedidos: undefined;
   DetallePedido: undefined;
   MisPedidos: undefined;
-  Inicio: undefined;
+  Cliente: undefined;
+  Admin: undefined;
+  Cart: undefined;
 
   // Agrega aquí otras rutas que tengas
 };
