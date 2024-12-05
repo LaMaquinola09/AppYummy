@@ -59,7 +59,12 @@ function PedidosScreen() {
     try {
       const response = await fetch("https://yummy.soudevteam.com/reppedidos");
       const data = await response.json();
-      setPedidos(data.pedidos);
+      if (data.pedidos && data.pedidos.length > 0) {
+        setPedidos(data.pedidos);
+      } else {
+        console.log("No hay pedidos disponibles en la respuesta");
+        setPedidos([]); // Opcional: limpiar la lista de pedidos en caso de respuesta vacía
+      }
     } catch (error) {
       console.error("Error al obtener los pedidos:", error);
     } finally {
@@ -134,7 +139,7 @@ function PedidosScreen() {
 
       {/* Lista de Pedidos */}
       <ScrollView style={styles.ordersList}>
-        {filteredOrders.map((order) => (
+        {pedidos && pedidos.length > 0 ? (filteredOrders.map((order) => (
           <View key={order.id} style={styles.orderCard}>
             <View style={styles.orderHeader}>
               <Text style={styles.orderLabel}>Pedido #{order.id}</Text>
@@ -150,7 +155,7 @@ function PedidosScreen() {
               <Text style={styles.linkText}>Ver Detalle</Text>
             </TouchableOpacity>
           </View>
-        ))}
+        ))) : (<Text style={styles.noPedidosText}>No se encontraron pedidos</Text>)}
       </ScrollView>
 
       {/* Modal para detalles del pedido */}
@@ -189,6 +194,12 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderWidth: 1,
     borderRadius: 8,
+  },
+  noPedidosText: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#999",
+    marginTop: 20,
   },
   orderHeader: { flexDirection: "row", justifyContent: "space-between" },
   orderLabel: { fontWeight: "bold" },
