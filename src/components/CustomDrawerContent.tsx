@@ -51,7 +51,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
     { name: 'Repartidor', label: 'Repartidor', icon: "bicycle-outline", roles: ['repartidor'] },
     { name: 'Pedidos', label: 'Lista de Pedidos', icon: "cart-outline", roles: ['repartidor'] },
     { name: 'Historial de pedidos', label: 'Historial de pedidos', icon: "time-outline", roles: ['cliente'] },
-    { name: 'Mis Pedidos', label: 'Mis Pedidos', icon: "list-outline", roles: ['cliente'] },
+    // { name: 'Mis Pedidos', label: 'Mis Pedidos', icon: "list-outline", roles: ['cliente'] },
     { name: 'Mi Perfil', label: 'Perfil', icon: "person-outline", roles: ['cliente', 'admin', 'repartidor'] },
     { name: 'WebViewScreen', label: 'Recuperar contraseña', icon: "lock-closed-outline", roles: ['cliente', 'admin', 'repartidor'] },
   ];
